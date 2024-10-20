@@ -4,41 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NP Racing - F1 in Schools</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
-    <script src="scripts.js" defer></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background-color: #111;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .navbar {
+            padding: 0.8rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+        .hero-section {
+            background-image: url('your-hero-image.jpg'); /* Add your hero image */
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            margin: 40px 0 20px;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        footer {
+            background-color: #111;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: #ff0000;
+            text-decoration: none;
+        }
+
+        /* Custom Button Styles */
+        .btn-custom {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #e60000;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to NP Racing</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#team">Our Team</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="home">
-            <h2>Our Mission</h2>
-            <p>We are the NP Racing team, participating in the F1 in Schools competition to push the boundaries of innovation and engineering.</p>
-        </section>
-        <section id="about">
-            <h2>About Us</h2>
-            <p>Learn more about our team, projects, and goals.</p>
-        </section>
-        <section id="team">
-            <h2>Meet the Team</h2>
-            <p>Get to know our team members and their roles.</p>
-        </section>
-        <section id="contact">
-            <h2>Contact Us</h2>
-            <p>Email us at: <a href="mailto:team@npracing.org">team@npracing.org</a></p>
-        </section>
-    </main>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">NP Racing</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#team">Our Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <h1>Welcome to NP Racing</h1>
+            <p class="lead">Innovating the Future of Motorsport</p>
+            <a href="#about" class="btn btn-custom">Learn More</a>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section id="mission" class="container">
+        <div class="section-title">Our Mission</div>
+        <p class="text-center">
+            We are the NP Racing team, participating in the F1 in Schools competition to push the boundaries of innovation and engineering.
+        </p>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="bg-light py-5">
+        <div class="container">
+            <div class="section-title">About Us</div>
+            <p class="text-center">
+                Learn more about our team, projects, and goals as we work towards creating cutting-edge F1 models for competition.
+            </p>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="container py-5">
+        <div class="section-title">Meet the Team</div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <img src="team-member1.jpg" alt="Team Member 1" class="img-fluid rounded-circle mb-3">
+                <h4>Member Name 1</h4>
+                <p>Role - Engineer</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="team-member2.jpg" alt="Team Member 2" class="img-fluid rounded-circle mb-3">
+                <h4>Member Name 2</h4>
+                <p>Role - Designer</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="team-member3.jpg" alt="Team Member 3" class="img-fluid rounded-circle mb-3">
+                <h4>Member Name 3</h4>
+                <p>Role - Project Manager</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="bg-light py-5">
+        <div class="container">
+            <div class="section-title">Contact Us</div>
+            <p class="text-center">
+                Have any questions or want to support our team? Get in touch at <a href="mailto:team@npracing.org">team@npracing.org</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
         <p>&copy; 2024 NP Racing. All Rights Reserved.</p>
     </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
