@@ -58,9 +58,10 @@ html {
 
 .hero-section {
     background-image: url('background.jpeg');
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
-    height: 500px;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -70,6 +71,7 @@ html {
     position: relative;
     background-color: rgba(0, 0, 0, 0.2);
 }
+
 
 .hero-section::before {
     content: '';
