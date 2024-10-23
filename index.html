@@ -1,272 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NP Racing - F1 in Schools</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NP Racing - F1 in Schools</title>
+        
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">NP Racing</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li><a class="nav-item nav-link" href="#home">Home</a></li>
+                        <li><a class="nav-item nav-link" href="#about">About Us</a></li>
+                        <li><a class="nav-item nav-link" href="#team">Our Team</a></li>
+                        <li><a class="nav-item nav-link" href="#sponsors">Sponsors</a></li>
+                        <li><a class="nav-item nav-link" href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>        
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <section id="home" class="hero-section">
+            <div class="container">
+                <h1 class="hero-title">NP Racing</h1>
+                <p class="lead hero-subtitle">Driving Innovation in F1 in Schools</p>
+                <a href="#about" class="btn btn-custom">Learn More</a>
+            </div>
+        </section>
 
-    <!-- Google Fonts - Motorsport Style -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+        <section id="mission" class="container py-5">
+            <div class="section-title">Our Mission</div>
+            <p class="text-center">
+                At NP Racing, we are dedicated to pushing the limits of what's possible in the world of F1 in Schools. Our passion for motorsport drives our innovation and creativity, as we strive to build not just the fastest car, but the most efficient and technically advanced design. We're here to win, and we're here to make a statement.
+            </p>
+            <p class="text-center">
+                Our goal is to not only compete but to learn valuable engineering, marketing, and teamwork skills that will prepare us for careers in the automotive and engineering industries.
+            </p>
+        </section>
 
-    <!-- Custom CSS -->
-    <style>
-        body {
-            font-family: 'Bebas Neue', sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
+        <section id="about" class="bg-light py-5">
+            <div class="container">
+                <div class="section-title">About Us</div>
+                <p class="text-center">
+                    NP Racing is a passionate group of students competing in the global F1 in Schools competition. We aim to design, manufacture, and race the fastest and most innovative model car, while gaining practical experience in project management, design, and engineering. Our journey is not only about building a car, but about building the future of motorsport technology.
+                </p>
+                <p class="text-center">
+                    With a focus on sustainability and cutting-edge technology, we are pioneering new approaches to car design, aerodynamics, and efficiency, ensuring that we not only meet but exceed the expectations of the competition.
+                </p>
+            </div>
+        </section>
 
-        header {
-            background-color: #111;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+        <section id="team" class="container-fluid">
+            <div class="section-title">Meet the Team</div>
+            <div class="team-members-wrapper">
+                <div class="team-members">
+                    <div class="col-md-4">
+                        <img src="team-member1.jpg" alt="Team Member 1">
+                        <h4>Viktorie Vítková</h4>
+                        <p>Engineer</p>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="team-member2.jpg" alt="Team Member 2">
+                        <h4>Viktor Novák</h4>
+                        <p>Head of Organization</p>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="team-member3.jpg" alt="Team Member 3">
+                        <h4>Matěj Prokop</h4>
+                        <p>Deputy Team Leader</p>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="team-member4.jpg" alt="Team Member 4">
+                        <h4>Veronika Lindová</h4>
+                        <p>Communication</p>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="team-member5.jpg" alt="Team Member 5">
+                        <h4>Lukáš Moravec</h4>
+                        <p>Engineer</p>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="team-member6.jpg" alt="Team Member 6">
+                        <h4>Lukáš Martin</h4>
+                        <p>Head of Sponsors</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
 
-        .navbar {
-            padding: 0.8rem;
-        }
-
-        .navbar-nav .nav-link {
-            color: white !important;
-        }
-
-        .hero-section {
-            background-image: url('/mnt/data/A_photo_of_a_sleek,_modern_Formula_1_car_in_action.png'); /* Add the F1 car image */
-            background-size: cover;
-            background-position: center;
-            height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-        }
-
-        .hero-section h1 {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            margin: 40px 0 20px;
-            text-align: center;
-            font-size: 2rem;
-        }
-
-        footer {
-            background-color: #111;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-        }
-
-        footer a {
-            color: #ff0000;
-            text-decoration: none;
-        }
-
-        .btn-custom {
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            background-color: #e60000;
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">NP Racing</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#team">Our Team</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#sponsors">Sponsors</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        <section id="sponsors" class="bg-light py-5">
+            <div class="container">
+                <div class="section-title">Why Sponsor Us?</div>
+                <p class="text-center">
+                    Sponsoring NP Racing is an opportunity to support young innovators and engineers on their journey to success. By backing our team, you'll be contributing to the development of future talent in the automotive and engineering industries. Our dedication to excellence and our passion for motorsport align with the values of leading brands, and we are committed to delivering value to our sponsors.
+                </p>
+                <p class="text-center">
+                    We offer our sponsors:
+                </p>
+                <ul class="text-center">
+                    <li>Brand exposure in international competitions</li>
+                    <li>Custom marketing and promotional opportunities</li>
+                    <li>Direct engagement with the next generation of engineers and innovators</li>
                 </ul>
             </div>
-        </div>
-    </nav>
+        </section>
 
-    <!-- Hero Section -->
-<section id="home" class="hero-section">
-    <div class="container">
-        <h1 class="hero-title">NP Racing</h1>
-        <p class="lead hero-subtitle">Driving Innovation in F1 in Schools</p>
-        <a href="#about" class="btn btn-custom">Learn More</a>
-    </div>
-</section>
-
-<!-- Custom CSS -->
-<style>
-    .hero-section {
-        background-image: url('/mnt/data/A_photo_of_a_sleek,_modern_Formula_1_car_in_action.png'); /* Add the F1 car image */
-        background-size: cover;
-        background-position: center;
-        height: 500px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
-
-    .hero-title {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        color: black; /* Change title color to black */
-    }
-
-    .hero-subtitle {
-        color: black; /* Change subtitle color to black */
-    }
-</style>
-
-    <!-- Mission Section -->
-    <section id="mission" class="container py-5">
-        <div class="section-title">Our Mission</div>
-        <p class="text-center">
-            At NP Racing, we are dedicated to pushing the limits of what's possible in the world of F1 in Schools. Our passion for motorsport drives our innovation and creativity, as we strive to build not just the fastest car, but the most efficient and technically advanced design. We're here to win, and we're here to make a statement.
-        </p>
-        <p class="text-center">
-            Our goal is to not only compete but to learn valuable engineering, marketing, and teamwork skills that will prepare us for careers in the automotive and engineering industries.
-        </p>
-    </section>
-
-    <!-- About Us Section -->
-    <section id="about" class="bg-light py-5">
-        <div class="container">
-            <div class="section-title">About Us</div>
-            <p class="text-center">
-                NP Racing is a passionate group of students competing in the global F1 in Schools competition. We aim to design, manufacture, and race the fastest and most innovative model car, while gaining practical experience in project management, design, and engineering. Our journey is not only about building a car, but about building the future of motorsport technology.
-            </p>
-            <p class="text-center">
-                With a focus on sustainability and cutting-edge technology, we are pioneering new approaches to car design, aerodynamics, and efficiency, ensuring that we not only meet but exceed the expectations of the competition.
-            </p>
-        </div>
-    </section>
-
-    <!-- Team Section -->
-<section id="team" class="container-fluid py-5">
-    <div class="section-title">Meet the Team</div>
-    <div class="team-members-wrapper">
-        <div class="team-members d-flex flex-nowrap overflow-auto">
-            <div class="col-md-4 text-center mx-3">
-                <img src="team-member1.jpg" alt="Team Member 1" class="img-fluid rounded-circle mb-3">
-                <h4>Viktorie Vítková</h4>
-                <p>Engineer</p>
+        <section id="contact" class="bg-light py-5">
+            <div class="container">
+                <div class="section-title">Contact Us</div>
+                <p class="text-center">
+                    Interested in sponsoring or learning more about NP Racing? Reach out to us at <a href="mailto:team@npracing.org">team@npracing.org</a>
+                </p>
             </div>
-            <div class="col-md-4 text-center mx-3">
-                <img src="team-member2.jpg" alt="Team Member 2" class="img-fluid rounded-circle mb-3">
-                <h4>Viktor Novák</h4>
-                <p>Head of Organization</p>
-            </div>
-            <div class="col-md-4 text-center mx-3">
-                <img src="team-member3.jpg" alt="Team Member 3" class="img-fluid rounded-circle mb-3">
-                <h4>Matěj Prokop</h4>
-                <p>Deputy Team Leader</p>
-            </div>
-            <div class="col-md-4 text-center mx-3">
-                <img src="team-member4.jpg" alt="Team Member 4" class="img-fluid rounded-circle mb-3">
-                <h4>Veronika Lindová</h4>
-                <p>Communication</p>
-            </div>
-            <div class="col-md-4 text-center mx-3">
-                <img src="team-member5.jpg" alt="Team Member 5" class="img-fluid rounded-circle mb-3">
-                <h4>Lukáš Moravec</h4>
-                <p>Engineer</p>
-            </div>
-            <div class="col-md-4 text-center mx-3">
-                <img src="team-member6.jpg" alt="Team Member 6" class="img-fluid rounded-circle mb-3">
-                <h4>Lukáš Martin</h4>
-                <p>Head of Sponsors</p>
-            </div>
-        </div>
-    </div>
-</section>
+        </section>
 
-<!-- Custom CSS for scrolling -->
-<style>
-    .team-members-wrapper {
-        overflow-x: auto;
-        padding-bottom: 15px;
-    }
-    
-    .team-members {
-        display: flex;
-        flex-wrap: nowrap;
-    }
-
-    .team-members .col-md-4 {
-        flex: 0 0 auto;
-        width: 300px; /* Control the width of each team member block */
-    }
-
-    /* Optional styling for the scroll bar */
-    .team-members-wrapper::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .team-members-wrapper::-webkit-scrollbar-thumb {
-        background-color: #333;
-        border-radius: 10px;
-    }
-
-    .team-members-wrapper::-webkit-scrollbar-track {
-        background-color: #f5f5f5;
-    }
-</style>
-
-    <!-- Sponsors Section -->
-    <section id="sponsors" class="bg-light py-5">
-        <div class="container">
-            <div class="section-title">Why Sponsor Us?</div>
-            <p class="text-center">
-                Sponsoring NP Racing is an opportunity to support young innovators and engineers on their journey to success. By backing our team, you'll be contributing to the development of future talent in the automotive and engineering industries. Our dedication to excellence and our passion for motorsport align with the values of leading brands, and we are committed to delivering value to our sponsors.
-            </p>
-            <p class="text-center">
-                We offer our sponsors:
-            </p>
-            <ul class="text-center">
-                <li>Brand exposure in international competitions</li>
-                <li>Custom marketing and promotional opportunities</li>
-                <li>Direct engagement with the next generation of engineers and innovators</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="bg-light py-5">
-        <div class="container">
-            <div class="section-title">Contact Us</div>
-            <p class="text-center">
-                Interested in sponsoring or learning more about NP Racing? Reach out to us at <a href="mailto:team@npracing.org">team@npracing.org</a>
-            </p>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 NP Racing. All Rights Reserved.</p>
-    </footer>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+        <footer>
+            <p>&copy; 2024 NP Racing. All Rights Reserved.</p>
+        </footer>
+    </body>
 </html>
