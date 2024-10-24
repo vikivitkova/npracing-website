@@ -69,14 +69,15 @@ html, body {
     background-image: url('background.jpeg');
     background-size: cover;
     background-position: center;
-    height: 600px;
+    background-repeat: no-repeat;
+    height: 100vh; /* Set to full viewport height */
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: white;
-    padding-top: 70px;
     position: relative;
+    margin-top: 0;
 }
 
 .hero-section::before {
