@@ -1,16 +1,18 @@
-body, html {
+/* Resetting basic styles */
+* {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;
     color: #333;
     scroll-behavior: smooth;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
+/* Navigation Bar */
 .navbar {
     background-color: #111;
     padding: 15px;
@@ -19,6 +21,11 @@ html {
     width: 100%;
     z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+    background-color: #000;
 }
 
 .navbar-brand {
@@ -50,18 +57,19 @@ html {
     color: white;
     font-size: 1rem;
     padding: 5px;
+    transition: color 0.3s ease;
 }
 
 .navbar-nav .nav-link:hover {
     color: #ff0000;
 }
 
+/* Hero Section */
 .hero-section {
     background-image: url('background.jpeg');
-    background-size: contain;
-    background-repeat: no-repeat;
+    background-size: cover;
     background-position: center;
-    min-height: 100vh;
+    height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,9 +77,7 @@ html {
     color: white;
     padding-top: 70px;
     position: relative;
-    background-color: rgba(0, 0, 0, 0.2);
 }
-
 
 .hero-section::before {
     content: '';
@@ -80,7 +86,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.6);
     z-index: 1;
 }
 
@@ -90,33 +96,36 @@ html {
 }
 
 .hero-title {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    text-shadow: 3px 3px 15px rgba(255, 255, 255, 0.8), 3px 3px 20px rgba(0, 0, 0, 0.8);
+    font-size: 4.5rem;
+    margin-bottom: 1.2rem;
+    text-shadow: 3px 3px 10px rgba(255, 255, 255, 0.8), 3px 3px 20px rgba(0, 0, 0, 0.8);
 }
 
 .hero-subtitle {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    text-shadow: 3px 3px 15px rgba(255, 255, 255, 0.8), 3px 3px 20px rgba(0, 0, 0, 0.8);
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    text-shadow: 3px 3px 10px rgba(255, 255, 255, 0.8), 3px 3px 20px rgba(0, 0, 0, 0.8);
 }
 
 .btn-custom {
     background-color: #ff0000;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 30px;
     border-radius: 30px;
     border: none;
-    transition: background-color 0.3s ease;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .btn-custom:hover {
     background-color: #e60000;
+    transform: scale(1.05);
 }
 
+/* Sections */
 section {
-    padding: 60px 20px;
-    margin: 20px;
+    padding: 80px 20px;
+    margin: 20px 0;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -124,7 +133,7 @@ section {
 }
 
 .section-title {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     margin-bottom: 30px;
     text-align: center;
     color: #111;
@@ -137,11 +146,13 @@ section {
 .text-left {
     text-align: left;
     font-size: 1.2rem;
-    line-height: 1.6;
+    line-height: 1.8;
 }
 
+/* Sponsors Section */
 #sponsors p, #sponsors ul {
     text-align: left;
+    font-size: 1.1rem;
 }
 
 #sponsors ul {
@@ -151,7 +162,7 @@ section {
 
 #sponsors ul li {
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     padding-left: 20px;
 }
 
@@ -162,19 +173,25 @@ section {
     left: 0;
 }
 
+/* Footer */
 footer {
     background-color: #111;
     color: white;
     text-align: center;
-    padding: 15px 0;
-    font-size: 1rem;
+    padding: 20px 0;
+    font-size: 1.1rem;
 }
 
 footer a {
     color: #ff0000;
+    transition: color 0.3s ease;
 }
 
+footer a:hover {
+    color: #e60000;
+}
 
+/* Team Members Section */
 .team-members-wrapper {
     position: relative;
     width: 100%;
@@ -199,8 +216,11 @@ footer a {
 .team-members img {
     width: 100%;
     height: auto;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Buttons for controls (slideshow, scrolling) */
 .slideshow-controls {
     text-align: center;
     margin-top: 20px;
@@ -212,6 +232,7 @@ button {
     border: none;
     padding: 10px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
