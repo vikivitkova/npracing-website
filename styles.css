@@ -163,7 +163,7 @@ section {
 
 #sponsors ul li:before {
     content: "•";
-    color: #ff0000;
+    color: #0f0f0f;
     position: absolute;
     left: 0;
 }
