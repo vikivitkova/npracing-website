@@ -44,23 +44,16 @@ html, body {
 
 /* Hero Section */
 .hero-section {
-    position: relative;
     background-image: url('model1.png'); /* Ensure correct path to the image */
     background-size: cover;
     background-position: center;
     height: 100vh;
     display: flex;
-    align-items: flex-start; /* Align content to the top */
+    align-items: center;
     justify-content: flex-start; /* Align content to the left */
-    padding: 20px; /* Add padding around the content */
+    text-align: left; /* Align text to the left */
+    padding-left: 50px; /* Add some left padding */
     color: white;
-}
-
-.hero-title,
-.hero-subtitle {
-    position: absolute;
-    top: 20px; /* Adjust to move the text to the top */
-    left: 20px; /* Adjust to move the text to the left */
 }
 
 .hero-title {
@@ -72,6 +65,7 @@ html, body {
 
 .hero-subtitle {
     font-size: 1.8rem;
+    margin-bottom: 30px;
     font-family: 'Bebas Neue', sans-serif;
     text-shadow: none;
 }
@@ -95,29 +89,20 @@ html, body {
 
 /* Section Styling */
 section {
-    padding: 80px 50px;
+    padding: 80px 50px; /* Add left padding to align content */
     margin: 20px 0;
-    background-color: transparent;
-    box-shadow: none;
-    border-radius: 0;
+    background-color: transparent; /* Remove background color */
+    box-shadow: none; /* Remove box shadow */
+    border-radius: 0; /* Remove border radius */
 }
 
 .section-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2.8rem;
     margin-bottom: 30px;
-    text-align: left; /* Align section titles to the left */
+    text-align: left; /* Align titles to the left */
     color: #111;
     font-weight: bold;
-}
-
-/* Align all text under titles to the left */
-section p {
-    text-align: left;
-    font-family: 'Arial', sans-serif;
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #333;
 }
 
 /* Meet the Team Styling */
@@ -126,14 +111,14 @@ section p {
     font-size: 2.8rem;
     color: #333;
     margin-bottom: 30px;
-    text-align: left;
+    text-align: left; /* Align Meet the Team title to the left */
     font-weight: bold;
 }
 
 .team-card {
     padding: 20px;
     margin-bottom: 20px;
-    text-align: left;
+    text-align: left; /* Align team cards to the left */
 }
 
 .team-card img {
@@ -153,14 +138,14 @@ section p {
 
 .team-role {
     font-size: 1rem;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     color: #666;
 }
 
 /* Sponsors Section */
 #sponsors .row .col-md-4 img {
-    max-width: 250px;
-    max-height: 150px;
+    max-width: 250px; /* Increase logo width */
+    max-height: 150px; /* Increase logo height */
     margin: 20px auto;
     display: block;
 }
@@ -169,7 +154,7 @@ section p {
 footer {
     background-color: #111;
     color: white;
-    text-align: left;
+    text-align: left; /* Align footer text to the left */
     padding: 20px 50px;
     font-size: 1.1rem;
     font-family: 'Bebas Neue', sans-serif;
@@ -184,11 +169,5 @@ ul {
 @media (max-width: 768px) {
     .team-card {
         margin-bottom: 20px;
-    }
-    .hero-title {
-        font-size: 3rem;
-    }
-    .hero-subtitle {
-        font-size: 1.4rem;
     }
 }
