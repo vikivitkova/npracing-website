@@ -6,7 +6,7 @@
 }
 
 html, body {
-    font-family: 'Impact', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     background-color: #f5f5f5;
     color: #333;
     scroll-behavior: smooth;
@@ -27,6 +27,7 @@ html, body {
     font-size: 2rem;
     color: white !important;
     font-weight: bold;
+    font-family: 'Bebas Neue', sans-serif;
     text-shadow: none;
 }
 
@@ -34,6 +35,7 @@ html, body {
     color: white !important;
     font-size: 1.2rem;
     padding: 5px;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .navbar-nav .nav-link:hover {
@@ -42,7 +44,7 @@ html, body {
 
 /* Hero Section */
 .hero-section {
-    background-image: url('model1.png');
+    background-image: url('model1.png'); /* Ensure correct path to the image */
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -56,26 +58,31 @@ html, body {
 .hero-title {
     font-size: 4.5rem;
     margin-bottom: 1.2rem;
+    font-family: 'Bebas Neue', sans-serif;
     text-shadow: none;
 }
 
 .hero-subtitle {
     font-size: 1.8rem;
     margin-bottom: 30px;
+    font-family: 'Bebas Neue', sans-serif;
     text-shadow: none;
 }
 
+/* Button Styling */
 .btn-custom {
-    background-color: dark yellow;
-    color: black;
+    background-color: #b8860b; /* Dark yellow color */
+    color: white;
     padding: 12px 30px;
     border-radius: 30px;
     border: none;
     font-size: 1.1rem;
-    transition: transform 0.2s;
+    font-family: 'Bebas Neue', sans-serif;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .btn-custom:hover {
+    background-color: #a67608; /* Slightly darker yellow on hover */
     transform: scale(1.05);
 }
 
@@ -89,7 +96,7 @@ section {
 }
 
 .section-title {
-    font-family: 'Impact', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 2.8rem;
     margin-bottom: 30px;
     text-align: center;
@@ -98,14 +105,8 @@ section {
 }
 
 /* Meet the Team Styling */
-#team {
-    background-color: #f9f9f9;
-    padding: 60px 20px;
-    border-radius: 10px;
-}
-
 #team .section-title {
-    font-family: 'Impact', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 2.8rem;
     color: #333;
     margin-bottom: 30px;
@@ -136,7 +137,7 @@ section {
 
 .team-card h4 {
     font-size: 1.2rem;
-    font-family: 'Impact', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     color: #111;
     font-weight: bold;
     margin-bottom: 5px;
@@ -144,7 +145,7 @@ section {
 
 .team-role {
     font-size: 1rem;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     color: #666;
 }
 
@@ -163,10 +164,7 @@ footer {
     text-align: center;
     padding: 20px 0;
     font-size: 1.1rem;
-}
-
-footer a {
-    color: yellow;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 /* Remove Bullet Points */
