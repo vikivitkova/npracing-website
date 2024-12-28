@@ -12,7 +12,11 @@ html, body {
     scroll-behavior: smooth;
 }
 
-/* Navbar Styling */
+/* Remove Bullet Points */
+ul {
+    list-style: none;
+}
+
 .navbar {
     background-color: #111;
     padding: 15px;
@@ -23,63 +27,14 @@ html, body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-brand {
-    font-size: 2rem;
-    color: white !important;
-    font-weight: bold;
-    text-shadow: none; /* Removed glow */
-}
-
+/* Bright Navbar Links */
 .navbar-nav .nav-link {
-    color: white !important; /* Bright white text */
+    color: white !important;
     font-size: 1.2rem;
     padding: 5px;
 }
 
-.navbar-nav .nav-link:hover {
-    color: #f0f0f0; /* Subtle hover effect */
-}
-
-/* Hero Section */
-.hero-section {
-    background-image: url('model1.png');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-}
-
-.hero-title {
-    font-size: 4.5rem;
-    margin-bottom: 1.2rem;
-    text-shadow: none; /* Removed glow */
-}
-
-.hero-subtitle {
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-    text-shadow: none; /* Removed glow */
-}
-
-.btn-custom {
-    background-color: yellow;
-    color: black;
-    padding: 12px 30px;
-    border-radius: 30px;
-    border: none;
-    font-size: 1.1rem;
-    transition: transform 0.2s;
-}
-
-.btn-custom:hover {
-    transform: scale(1.05);
-}
-
-/* Section Styling */
+/* Uniform Section Styling */
 section {
     padding: 80px 20px;
     margin: 20px 0;
@@ -88,54 +43,20 @@ section {
     border-radius: 10px;
 }
 
-.section-title {
-    font-size: 2.8rem;
-    margin-bottom: 30px;
-    text-align: center;
-    color: #111;
-}
-
-/* Team Section */
-.team-members-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.team-members .col-md-4 {
-    margin: 20px;
-    text-align: center;
-}
-
 .team-members img {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 1s; /* For rotation */
+    transition: transform 1s;
 }
 
 .team-members img:hover {
     transform: rotate(360deg);
 }
 
-/* Sponsor Section */
-#sponsors .row .col-md-4 img {
-    max-width: 150px;
-    max-height: 100px;
-    margin: 10px auto;
-    display: block;
-}
-
-/* Footer */
 footer {
     background-color: #111;
     color: white;
     text-align: center;
     padding: 20px 0;
-    font-size: 1.1rem;
-}
-
-footer a {
-    color: yellow;
 }
