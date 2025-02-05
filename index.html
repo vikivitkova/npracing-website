@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NP Racing - F1 in Schools</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.4/dist/tailwind.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand text-uppercase font-weight-bold" href="#">NP Racing</a>
+            <a class="navbar-brand npracing-header" href="#">NP Racing</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -27,58 +30,95 @@
         </div>
     </nav>
 
-    <section id="home" class="hero-section text-center text-white bg-cover bg-center" style="background-image: url('hero-bg.jpg'); height: 100vh; display: flex; align-items: center; justify-content: center;">
-        <div>
-            <h1 class="text-5xl font-bold">NP Racing</h1>
-            <p class="text-lg mt-2">Driving Innovation in F1 in Schools</p>
-        </div>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <h1 class="hero-title">NP Racing</h1>
+        <p class="lead hero-subtitle">Driving Innovation in F1 in Schools</p>
     </section>
 
-    <section id="mission" class="py-12 px-6">
-        <h2 class="text-3xl font-bold">Our Mission</h2>
-        <p class="mt-4 text-lg">At NP Racing, we push the limits of innovation in F1 in Schools, aiming for the fastest, most efficient design while mastering engineering, marketing, and teamwork.</p>
+    <!-- Mission Section -->
+    <section id="mission">
+        <div class="section-title">Our Mission</div>
+        <p>
+            At NP Racing, we are dedicated to pushing the limits of what's possible in the world of F1 in Schools. Our passion for motorsport drives our innovation and creativity, as we strive to build not just the fastest car, but the most efficient and technically advanced design. We're here to win, and we're here to make a statement.
+        </p>
+        <p>
+            Our goal is to not only compete but to learn valuable engineering, marketing, and teamwork skills that will prepare us for careers in the automotive and engineering industries.
+        </p>
     </section>
 
-    <section id="about" class="py-12 px-6 bg-gray-100">
-        <h2 class="text-3xl font-bold">About Us</h2>
-        <p class="mt-4 text-lg">NP Racing is a passionate group of students competing in the F1 in Schools competition, striving to design and manufacture the most advanced model car. We focus on engineering, project management, and business development to prepare for careers in the automotive and technology sectors.</p>
+    <!-- About Us Section -->
+    <section id="about">
+        <div class="section-title">About Us</div>
+        <p>
+            NP Racing is a passionate group of students competing in the global F1 in Schools competition. We aim to design, manufacture, and race the fastest and most innovative model car, while gaining practical experience in project management, design, and engineering. Our journey is not only about building a car, but about building the future of motorsport technology.
+        </p>
+        <p>
+            With a focus on sustainability and cutting-edge technology, we are pioneering new approaches to car design, aerodynamics, and efficiency, ensuring that we not only meet but exceed the expectations of the competition.
+        </p>
     </section>
 
-    <section id="team" class="py-12 px-6">
-        <h2 class="text-3xl font-bold">Meet the Team</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
-            <div class="text-center">
-                <img src="team-member1.png" alt="Viktorie Vítková" class="w-32 h-32 rounded-full mx-auto">
-                <h4 class="mt-2 font-bold">Viktorie Vítková</h4>
-                <p class="text-gray-600">Engineer</p>
+    <!-- Meet the Team Section -->
+    <section id="team">
+        <div class="section-title">Meet the Team</div>
+        <div class="team-members-wrapper">
+            <div class="team-members">
+                <div>
+                    <img src="team-member2.png" alt="Team Member 2" class="img-fluid rounded-circle mb-3">
+                    <h4>Matěj Prokop</h4>
+                    <p>Team Manager</p>
+                </div>
+                <div>
+                    <img src="team-member1.png" alt="Team Member 1" class="img-fluid rounded-circle mb-3">
+                    <h4>Viktorie Vítková</h4>
+                    <p>Engineer</p>
+                </div>
+                <div>
+                    <img src="team-member5.jpg" alt="Team Member 5" class="img-fluid rounded-circle mb-3">
+                    <h4>Lukáš Moravec</h4>
+                    <p>Engineer</p>
+                </div>
+                    <img src="team-member4.jpg" alt="Team Member 4" class="img-fluid rounded-circle mb-3">
+                    <h4>Veronika Lindová</h4>
+                    <p>Communication</p>
+                </div>
+                <div>
+                    <img src="team-member6.jpg" alt="Team Member 6" class="img-fluid rounded-circle mb-3">
+                    <h4>Lukáš Martin</h4>
+                    <p>Head of Sponsors</p>
+                </div>
             </div>
-            <div class="text-center">
-                <img src="team-member2.png" alt="Matěj Prokop" class="w-32 h-32 rounded-full mx-auto">
-                <h4 class="mt-2 font-bold">Matěj Prokop</h4>
-                <p class="text-gray-600">Team Manager</p>
+        </div>
+    </section>
+
+    <!-- Sponsors Section -->
+    <section id="sponsors">
+        <div class="section-title">Sponsors</div>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="sponsor1.png" alt="Sponsor 1" class="img-fluid mb-3">
+            </div>
+            <div class="col-md-4">
+                <img src="sponsor2.png" alt="Sponsor 2" class="img-fluid mb-3">
+            </div>
+            <div class="col-md-4">
+                <img src="sponsor3.png" alt="Sponsor 3" class="img-fluid mb-3">
             </div>
         </div>
     </section>
 
-    <section id="sponsors" class="py-12 px-6 bg-gray-100">
-        <h2 class="text-3xl font-bold">Sponsors</h2>
-        <p class="text-lg text-gray-600">We are proudly supported by industry leaders who share our vision for innovation in motorsports.</p>
-        <div class="flex flex-wrap justify-center gap-6 mt-6">
-            <img src="sponsor1.png" alt="Sponsor 1" class="h-24">
-            <img src="sponsor2.png" alt="Sponsor 2" class="h-24">
-            <img src="sponsor3.png" alt="Sponsor 3" class="h-24">
-        </div>
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="section-title">Contact Us</div>
+        <p>
+            Interested in sponsoring or learning more about NP Racing? Reach out to us at <a href="mailto:team@npracing.org">team@npracing.org</a>
+        </p>
     </section>
 
-    <section id="contact" class="py-12 px-6">
-        <h2 class="text-3xl font-bold">Contact Us</h2>
-        <p class="mt-4 text-lg">Interested in sponsoring or learning more? Reach out to us at <a href="mailto:team@npracing.org" class="text-blue-500">team@npracing.org</a>.</p>
-    </section>
-
-    <footer class="bg-black text-white py-6 text-center">
+    <!-- Footer -->
+    <footer>
         <p>&copy; 2024 NP Racing. All Rights Reserved.</p>
-        <p class="text-sm">Follow us on social media: <a href="#" class="text-blue-400">Instagram</a> | <a href="#" class="text-blue-400">Facebook</a> | <a href="#" class="text-blue-400">LinkedIn</a></p>
     </footer>
 </body>
 <script src="scripts.js"></script>
-</html>
+</html> to your best abilities
