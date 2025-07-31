@@ -265,7 +265,7 @@ export default function App() {
         paddingTop: 110,
         fontFamily: "'Inconsolata', monospace",
         color: "#fff"
-      }};
+      }}>
           <ThreeDCar />
         </div>
       </div>
