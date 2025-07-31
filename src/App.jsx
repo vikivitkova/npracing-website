@@ -3,59 +3,58 @@ import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
-function Halo() {
+function FloatingObjModel() {
+  const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj");
   return (
-    <mesh>
-      <ringGeometry args={[2.2, 2.5, 64]} />
-      <meshBasicMaterial
-        color={"#00ffff"}
-        transparent
-        opacity={0.45}
-        side={2}
-      />
-    </mesh>
+    <primitive
+      object={obj}
+      scale={10}
+      position={[0, 0, 0]}
+      castShadow
+      receiveShadow
+    />
   );
 }
 
-// OBJ Model Loader Component
-function FloatingObjModel() {
-  const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj");
-  return <primitive object={obj} scale={2} position={[0, 0, 0]} />;
-}
-
-function FloatingModel() {
+function ShadowPlane() {
   return (
-    <group>
-      <Halo />
-      {/* Suspense is recommended for async models */}
-      <Suspense fallback={<Html center>Loading Model...</Html>}>
-        <FloatingObjModel />
-      </Suspense>
-      {/* Subtle shadow effect via Html */}
-      <Html position={[0, -2.1, 0]} center>
-        <div
-          style={{
-            width: "80px",
-            height: "20px",
-            background: "radial-gradient(ellipse at center, #00ffff33 0%, #fff0 100%)",
-            borderRadius: "50%",
-            filter: "blur(2px)",
-            opacity: 0.7,
-            margin: "0 auto"
-          }}
-        />
-      </Html>
-    </group>
+    <mesh
+      position={[0, -12, 0]}
+      rotation={[-Math.PI / 2, 0, 0]}
+      receiveShadow
+    >
+      <planeGeometry args={[100, 100]} />
+      <shadowMaterial opacity={0.5} />
+    </mesh>
   );
 }
 
 export default function App() {
   return (
     <div style={{ width: "100vw", height: "100vh", background: "#181b2c" }}>
-      <Canvas camera={{ position: [0, 0, 7], fov: 60 }}>
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[5, 5, 5]} intensity={0.7} />
-        <FloatingModel />
+      <Canvas
+        camera={{ position: [0, 0, 40], fov: 60 }}
+        shadows
+        gl={{ antialias: true }}
+      >
+        {/* Minimal key light from camera, casting shadow */}
+        <directionalLight
+          position={[0, 0, 40]} // Same as camera
+          intensity={1.5}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-bias={-0.0001}
+        />
+        {/* Subtle fill/rim light from behind */}
+        <directionalLight
+          position={[0, 0, -40]}
+          intensity={0.3}
+        />
+        <Suspense fallback={<Html center>Loading Model...</Html>}>
+          <FloatingObjModel />
+        </Suspense>
+        <ShadowPlane />
         <OrbitControls enablePan={false} enableZoom={false} />
       </Canvas>
     </div>
