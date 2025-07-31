@@ -238,14 +238,24 @@ function ThreeDCar() {
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
         }}
       >
+        {/* base fill so shadows aren’t pure black */}
+        <ambientLight intensity={0.3} />
+
+        {/* environment HDR reflections */}
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
-        <HeadLight intensity={1.5} />
+
+        {/* camera‐attached directional “headlight” */}
+        <HeadLight intensity={2.0} />
+
+        {/* your model and ground plane */}
         <Suspense fallback={null}>
           <FloatingObjModel onLoad={() => setLoading(false)} />
           <ShadowPlane />
         </Suspense>
+
+        {/* controls */}
         <OrbitControls
           enablePan={false}
           enableZoom={false}
