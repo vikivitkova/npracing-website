@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
@@ -149,8 +149,8 @@ function FloatingObjModel({ onLoad }) {
   return (
     <primitive
       object={obj}
-      scale={300000}
-      position={[0, 0, 0]}
+      scale={600000}
+      position={[0, 0, -0.5]}
       castShadow
       receiveShadow
     />
