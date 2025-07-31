@@ -5,7 +5,7 @@ import { OrbitControls, Environment } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (original full code)
-function NPLogo({ size = 420 }) {
+function NPLogo({ size = 336 }) {
   return (
     <svg
       width={size}
@@ -86,7 +86,7 @@ function LoadingScreen({ visible }) {
       letterSpacing: 2
     }}>
       <NPLogo size={420} />
-      <div style={{ marginTop: 42 }}>Loading Model...</div>
+      <div style={{ marginTop: 42 }}>Loading ...</div>
     </div>
   );
 }
@@ -96,7 +96,7 @@ function TopBar() {
     <div
       style={{
         width: "100vw",
-        height: "90px",
+        height: "70px",
         background: "#000",
         display: "flex",
         alignItems: "center",
@@ -111,7 +111,7 @@ function TopBar() {
         fontFamily: "'Inconsolata', monospace"
       }}>
       <a href="/" style={{ display: "block" }}>
-        <NPLogo size={220} />
+        <NPLogo size={176} />
       </a>
       <nav style={{ display: "flex", alignItems: "center", marginLeft: 48 }}>
         <a href="/" style={navLinkStyle}>Home</a>
@@ -161,7 +161,7 @@ function FloatingObjModel({ onLoad }) {
   return (
     <primitive
       object={obj}
-      scale={600000}
+      scale={1200000}
       position={[0, 0, 0.5]}
       castShadow
       receiveShadow
