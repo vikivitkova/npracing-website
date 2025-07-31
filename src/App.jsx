@@ -266,6 +266,9 @@ export default function App() {
         fontFamily: "'Inconsolata', monospace",
         color: "#fff"
       }}>
+        <h1 style={{ color: "#ffcc00", fontSize: 54, marginBottom: 24 }}>NP Racing</h1>
+        <p style={{ fontSize: 28 }}>Welcome to NP Racing's F1 in Schools Team! Explore the car in 3D, meet our team, view the schedule, and contact us.</p>
+        <div style={{ marginTop: 48 }}>
           <ThreeDCar />
         </div>
       </div>
