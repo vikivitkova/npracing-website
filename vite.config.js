@@ -9,5 +9,5 @@ export default defineConfig({
   server: {
     open: true,
   },
-  base: "/public/index.html", // for GitHub Pages
+  //base: "/public/index.html", // for GitHub Pages
 });
