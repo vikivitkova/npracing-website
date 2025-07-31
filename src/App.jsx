@@ -81,7 +81,7 @@ function LoadingScreen({ visible }) {
         justifyContent: "center",
         color: "#ffcc00",
         fontFamily: "'Inconsolata', monospace",
-        fontSize: 38,
+        fontSize: 35,
         letterSpacing: 2,
       }}
     >
@@ -129,7 +129,7 @@ function TopBar() {
       }}
     >
       <a href="/" style={{ display: "block" }}>
-        <NPLogo size={176} />
+        <NPLogo size={150} />
       </a>
       <nav style={{ display: "flex", alignItems: "center" }}>
         <a href="/" style={navLinkStyle}>
@@ -153,15 +153,9 @@ function TopBar() {
 }
 
 function FloatingObjModel({ onLoad }) {
-  const obj = useLoader(
-    OBJLoader,
-    "/models/F1 in schools v171 body.obj",
-    undefined,
-    onLoad
-  );
-
+  const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj", undefined, onLoad);
   useEffect(() => {
-    obj.traverse((child) => {
+    obj.traverse(child => {
       if (child.isMesh) {
         child.material.polygonOffset = true;
         child.material.polygonOffsetFactor = 5;
@@ -170,36 +164,25 @@ function FloatingObjModel({ onLoad }) {
       }
     });
   }, [obj]);
-
-  return (
-    <primitive
-      object={obj}
-      scale={600000}
-      position={[0, 0, 0.5]}
-      castShadow
-      receiveShadow
-    />
-  );
+  return <primitive object={obj} scale={600000} position={[0,0,0.5]} castShadow receiveShadow />;
 }
 
 function ShadowPlane() {
   return (
-    <mesh position={[0, -36000, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[300000, 300000]} />
+    <mesh rotation={[-Math.PI/2,0,0]} receiveShadow>
+      <planeGeometry args={[300000,300000]} />
       <shadowMaterial opacity={0.35} />
     </mesh>
   );
 }
 
-// HeadLight moves with the camera so lighting stays consistent
-function HeadLight({ intensity = 2.0 }) {
+function HeadLight({ intensity = 1.5 }) {
   const { camera } = useThree();
   useEffect(() => {
     const light = new THREE.DirectionalLight(0xffffff, intensity);
     light.castShadow = true;
     light.shadow.bias = 0.005;
     light.shadow.normalBias = 0.2;
-    light.shadow.mapSize.set(4096, 4096);
     camera.add(light);
     return () => camera.remove(light);
   }, [camera, intensity]);
@@ -211,62 +194,58 @@ function ThreeDCar() {
 
   useEffect(() => {
     const link = document.createElement("link");
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
+    link.href = "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "80vh",
-        background: "#000",
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div style={{
+      width: "100%", height: "80vh", background: "#000",
+      position: "relative", display: "flex",
+      alignItems: "center", justifyContent: "center"
+    }}>
       <LoadingScreen visible={loading} />
       <Canvas
         shadows
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          outputEncoding: THREE.sRGBEncoding,
+          outputEncoding: THREE.sRGBEncoding
         }}
-        camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
-        style={{ background: "transparent", width: "100%", height: "100%" }}
+        camera={{ position: [0,0,200000], fov: 7, near: 10000, far: 500000 }}
+        style={{ background: "#000", width: "100%", height: "100%" }}
         onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
         }}
       >
-        {/* hemisphere fill for sky/ground contrast */}
-        <hemisphereLight skyColor={0xffffff} groundColor={0x444444} intensity={0.6} />
-        {/* ambient fill */}
-        <ambientLight intensity={0.4} />
-        {/* environment reflections */}
+        {/* Balanced lighting */}
+        <hemisphereLight skyColor={0xffffff} groundColor={0x222222} intensity={0.3} />
+        <ambientLight intensity={0.2} />
+
+        {/* HDR for reflective bits */}
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
-        {/* camera‐attached headlight */}
-        <HeadLight intensity={2.0} />
-        {/* centered model */}
+
+        {/* camera‐attached key light */}
+        <HeadLight intensity={1.5} />
+
+        {/* center both car and ground */}
         <Suspense fallback={null}>
           <Center>
             <FloatingObjModel onLoad={() => setLoading(false)} />
+            <ShadowPlane />
           </Center>
-          <ShadowPlane />
         </Suspense>
+
         <OrbitControls
           enablePan={false}
           enableZoom={false}
           enableDamping
           dampingFactor={0.1}
-          target={[0, 0, 0]}
+          target={[0,0,0]}
           minPolarAngle={0.2}
           maxPolarAngle={Math.PI - 0.2}
         />
@@ -278,24 +257,16 @@ function ThreeDCar() {
 export default function App() {
   useEffect(() => {
     const link = document.createElement("link");
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
+    link.href = "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
 
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background: "#000",
-        fontFamily: "'Inconsolata', monospace",
-        overflow: "hidden",
-      }}
-    >
+    <div style={{
+      width: "100vw", height: "100vh", display: "flex",
+      flexDirection: "column", background: "#000", overflow: "hidden"
+    }}>
       <TopBar />
       <ThreeDCar />
     </div>
