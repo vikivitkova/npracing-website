@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap');
+
+:root {
+  --primary: #000;
+  --accent: #ffcc00;
+  --neutral: #fff;
+  --font-main: 'Inconsolata', monospace;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--primary);
+  color: var(--neutral);
+  font-family: var(--font-main);
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
