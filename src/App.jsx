@@ -1,17 +1,17 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
-// Inline SVG logo component
-function NPLogo({ size = 48 }) {
+// Inline NP Racing SVG Logo
+function NPLogo({ size = 160 }) {
   return (
     <svg
       width={size}
       height={(size * 30.96) / 104.14}
       viewBox="0 0 104.1419 30.962112"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ marginRight: 16 }}
+      style={{ display: "block" }}
     >
       <g transform="translate(-54.124261,-130.25079)">
         <g
@@ -65,22 +65,22 @@ function NPLogo({ size = 48 }) {
 }
 
 // Top bar menu
-function TopBar() {
+function TopBar({ active, onMenuClick }) {
   const menuItems = [
-    "Home",
-    "Team",
-    "Schedule",
-    "Contact"
+    { label: "Home", key: "home" },
+    { label: "Team", key: "team" },
+    { label: "Schedule", key: "schedule" },
+    { label: "Contact", key: "contact" }
   ];
   return (
     <div
       style={{
         width: "100vw",
-        height: "64px",
+        height: "90px",
         background: "#000",
         display: "flex",
         alignItems: "center",
-        padding: "0 32px",
+        padding: "0 48px",
         boxSizing: "border-box",
         position: "fixed",
         top: 0,
@@ -90,34 +90,40 @@ function TopBar() {
         fontFamily: "'Inconsolata', monospace"
       }}
     >
-      <NPLogo size={48} />
-      {menuItems.map((item, idx) => (
-        <React.Fragment key={item}>
-          <span
-            style={{
-              color: "#fff",
-              fontSize: 22,
-              fontWeight: 600,
-              letterSpacing: 1,
-              marginRight: idx !== menuItems.length - 1 ? 24 : 0,
-              fontFamily: "'Inconsolata', monospace",
-              cursor: "pointer"
-            }}
-          >
-            {item}
-          </span>
-          {idx !== menuItems.length - 1 && (
+      <div style={{ display: "flex", alignItems: "center", minWidth: 180 }}>
+        <NPLogo size={160} />
+      </div>
+      <nav style={{ display: "flex", alignItems: "center", marginLeft: 40 }}>
+        {menuItems.map((item, idx) => (
+          <React.Fragment key={item.key}>
             <span
               style={{
-                color: "#ffcc00",
-                fontWeight: 700,
+                color: active === item.key ? "#ffcc00" : "#fff",
                 fontSize: 28,
-                marginRight: 24
+                fontWeight: 700,
+                letterSpacing: 1,
+                marginRight: idx !== menuItems.length - 1 ? 32 : 0,
+                fontFamily: "'Inconsolata', monospace",
+                cursor: "pointer",
+                transition: "color 0.2s"
               }}
-            >•</span>
-          )}
-        </React.Fragment>
-      ))}
+              onClick={() => onMenuClick(item.key)}
+            >
+              {item.label}
+            </span>
+            {idx !== menuItems.length - 1 && (
+              <span
+                style={{
+                  color: "#ffcc00",
+                  fontWeight: 700,
+                  fontSize: 36,
+                  marginRight: 32
+                }}
+              >•</span>
+            )}
+          </React.Fragment>
+        ))}
+      </nav>
     </div>
   );
 }
@@ -140,11 +146,11 @@ function LoadingScreen({ visible }) {
       justifyContent: "center",
       color: "#ffcc00",
       fontFamily: "'Inconsolata', monospace",
-      fontSize: 26,
+      fontSize: 38,
       letterSpacing: 2
     }}>
-      <NPLogo size={80} />
-      <div style={{marginTop: 28}}>Loading Model...</div>
+      <NPLogo size={320} />
+      <div style={{marginTop: 42}}>Loading Model...</div>
     </div>
   );
 }
@@ -155,7 +161,7 @@ function FloatingObjModel({ onLoad }) {
   return (
     <primitive
       object={obj}
-      scale={2000}
+      scale={2500}
       position={[0, 0, 0]}
       castShadow
       receiveShadow
@@ -177,12 +183,58 @@ function ShadowPlane() {
   );
 }
 
-// Main App
-export default function App() {
-  const [loading, setLoading] = useState(true);
+// Placeholder Page Content
+function PageContent({ page }) {
+  const pageStyles = {
+    fontFamily: "'Inconsolata', monospace",
+    color: "#fff",
+    padding: "110px 48px 0 48px",
+    minHeight: "calc(100vh - 90px)",
+    background: "#000"
+  };
+  switch (page) {
+    case "home":
+      return (
+        <div style={pageStyles}>
+          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>NP Racing</h1>
+          <p style={{ fontSize: 24 }}>Welcome to NP Racing's F1 in Schools Team! Explore the car in 3D, meet our team, view the schedule, and contact us.</p>
+          <div style={{ height: 400, marginTop: 48, position: "relative" }}>
+            {/* 3D Canvas inserted below */}
+            <ThreeDCar />
+          </div>
+        </div>
+      );
+    case "team":
+      return (
+        <div style={pageStyles}>
+          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>Our Team</h1>
+          <p style={{ fontSize: 24 }}>Meet the talented members behind NP Racing. (Team bios, roles, photos go here.)</p>
+        </div>
+      );
+    case "schedule":
+      return (
+        <div style={pageStyles}>
+          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>Schedule</h1>
+          <p style={{ fontSize: 24 }}>Check out our upcoming events, races, and milestones. (Schedule details go here.)</p>
+        </div>
+      );
+    case "contact":
+      return (
+        <div style={pageStyles}>
+          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>Contact Us</h1>
+          <p style={{ fontSize: 24 }}>Reach out to NP Racing for any inquiries. (Contact form or info goes here.)</p>
+        </div>
+      );
+    default:
+      return null;
+  }
+}
 
-  // Load Google Fonts
-  React.useEffect(() => {
+// 3D Canvas isolated for Home page only
+function ThreeDCar() {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    // Ensure font loads
     const link = document.createElement("link");
     link.href =
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
@@ -190,88 +242,94 @@ export default function App() {
     document.head.appendChild(link);
   }, []);
 
-  // Hide loading after model loads
   function handleModelLoaded() {
     setLoading(false);
   }
 
   return (
+    <div style={{ width: "100%", height: "400px", background: "#000", borderRadius: 16, position: "relative" }}>
+      <LoadingScreen visible={loading} />
+      <Canvas
+        shadows
+        gl={{
+          antialias: true,
+          toneMapping: 1, // THREE.ReinhardToneMapping
+          outputEncoding: 3001, // THREE.sRGBEncoding
+        }}
+        camera={{
+          position: [0, 0, 200],
+          fov: 10,
+          near: 0.1,
+          far: 1000
+        }}
+        style={{
+          background: "transparent"
+        }}
+        onCreated={({ gl }) => {
+          gl.shadowMap.enabled = true;
+          gl.shadowMap.type = 2; // THREE.PCFSoftShadowMap
+        }}
+      >
+        {/* HDRI environment for realistic reflections, but only for indirect lighting */}
+        <Suspense fallback={null}>
+          <Environment preset="city" background={false} />
+        </Suspense>
+        {/* Single spotlight, fixed in scene coordinates */}
+        <spotLight
+          position={[0, 50, 200]}
+          angle={0.17}
+          penumbra={1}
+          intensity={2.5}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-bias={-0.0001}
+          target-position={[0, 0, 0]}
+          color="#fff"
+        />
+        <Suspense fallback={null}>
+          <FloatingObjModel onLoad={handleModelLoaded} />
+          <ShadowPlane />
+        </Suspense>
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          target={[0, 0, 0]}
+          minPolarAngle={0.2}
+          maxPolarAngle={Math.PI - 0.2}
+        />
+      </Canvas>
+    </div>
+  );
+}
+
+// Main App
+export default function App() {
+  const [activePage, setActivePage] = useState("home");
+
+  useEffect(() => {
+    // Load Google Fonts
+    const link = document.createElement("link");
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  }, []);
+
+  return (
     <div
       style={{
         width: "100vw",
-        height: "100vh",
+        minHeight: "100vh",
         background: "#000",
         position: "relative",
-        overflow: "hidden",
+        overflowX: "hidden",
         fontFamily: "'Inconsolata', monospace"
       }}
     >
-      <TopBar />
-      <LoadingScreen visible={loading} />
-      <div style={{
-        position: "absolute",
-        left: 0,
-        top: 64,
-        width: "100vw",
-        height: "calc(100vh - 64px)"
-      }}>
-        <Canvas
-          shadows
-          gl={{
-            antialias: true,
-            toneMapping: 1, // THREE.ReinhardToneMapping
-            outputEncoding: 3001, // THREE.sRGBEncoding
-          }}
-          camera={{
-            position: [0, 0, 200],
-            fov: 20,
-            near: 0.1,
-            far: 1000
-          }}
-          style={{
-            background: "transparent"
-          }}
-          onCreated={({ gl }) => {
-            gl.shadowMap.enabled = true;
-            gl.shadowMap.type = 2; // THREE.PCFSoftShadowMap
-          }}
-        >
-          {/* HDRI environment for realistic reflections */}
-          <Suspense fallback={null}>
-            <Environment preset="city" background={false} />
-          </Suspense>
-          {/* SpotLight shines from the camera POV for realistic highlights/shadows */}
-          <spotLight
-            position={[0, 40, 200]}
-            angle={0.22}
-            penumbra={1}
-            intensity={2.5}
-            castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
-            shadow-bias={-0.0001}
-            target-position={[0, 0, 0]}
-            color="#fff"
-          />
-          {/* Subtle fill light from behind for rim lighting */}
-          <directionalLight
-            position={[0, 30, -100]}
-            intensity={0.3}
-            color="#ffcc00"
-          />
-          <Suspense fallback={null}>
-            <FloatingObjModel onLoad={handleModelLoaded} />
-            <ShadowPlane />
-          </Suspense>
-          <OrbitControls
-            enablePan={false}
-            enableZoom={false}
-            target={[0, 0, 0]}
-            minPolarAngle={0.2}
-            maxPolarAngle={Math.PI - 0.2}
-            style={{ color: "#fff" }}
-          />
-        </Canvas>
+      <TopBar active={activePage} onMenuClick={setActivePage} />
+      <div style={{ paddingTop: 90 }}>
+        <PageContent page={activePage} />
       </div>
     </div>
   );
