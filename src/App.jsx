@@ -8,7 +8,7 @@ function FloatingObjModel() {
   return (
     <primitive
       object={obj}
-      scale={10}
+      scale={1000}
       position={[0, 0, 0]}
       castShadow
       receiveShadow
