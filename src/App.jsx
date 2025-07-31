@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Environment, Html, Loader } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // Top bar menu with SVG logo (replace with your own SVG if needed)
@@ -57,7 +57,7 @@ function FloatingObjModel() {
   return (
     <primitive
       object={obj}
-      scale={2000}
+      scale={10}
       position={[0, 0, 0]}
       castShadow
       receiveShadow
@@ -78,7 +78,56 @@ function ShadowPlane() {
   );
 }
 
+// Custom full-screen loading overlay
+function LoadingScreen() {
+  return (
+    <div style={{
+      position: "fixed",
+      zIndex: 1000,
+      left: 0,
+      top: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "#000",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "#0ff",
+      fontFamily: "sans-serif",
+      fontSize: 28,
+      letterSpacing: 2
+    }}>
+      <svg
+        width="60"
+        height="60"
+        viewBox="0 0 100 100"
+        fill="none"
+        style={{ marginBottom: 28 }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="50" cy="50" r="45" stroke="#0ff" strokeWidth="8" fill="#181b2c" />
+        <text
+          x="50%"
+          y="54%"
+          textAnchor="middle"
+          fill="#0ff"
+          fontSize="38"
+          fontFamily="Arial"
+          dy=".3em"
+        >
+          F1
+        </text>
+      </svg>
+      Loading Model...
+    </div>
+  );
+}
+
 export default function App() {
+  // Use a state to control loading screen visibility
+  const [loading, setLoading] = useState(true);
+
   return (
     <div
       style={{
@@ -90,6 +139,7 @@ export default function App() {
       }}
     >
       <TopBar />
+      {loading && <LoadingScreen />}
       <div style={{
         position: "absolute",
         left: 0,
@@ -99,7 +149,11 @@ export default function App() {
       }}>
         <Canvas
           shadows
-          gl={{ antialias: true }}
+          gl={{
+            antialias: true,
+            toneMapping: 1, // THREE.ReinhardToneMapping
+            outputEncoding: 3001, // THREE.sRGBEncoding
+          }}
           camera={{
             position: [0, 0, 200],      // Much longer focal length
             fov: 20,                    // Narrower field of view for telephoto look
@@ -109,36 +163,56 @@ export default function App() {
           style={{
             background: "transparent"
           }}
+          onCreated={({ gl }) => {
+            gl.shadowMap.enabled = true;
+            gl.shadowMap.type = 2; // THREE.PCFSoftShadowMap
+          }}
         >
-          {/* Realistic lighting: spotlight shines almost directly at camera */}
+          {/* Realistic environment lighting */}
+          <Suspense fallback={null}>
+            <Environment preset="city" background={false} />
+          </Suspense>
+          {/* SpotLight shines from the camera POV for realistic highlights/shadows */}
           <spotLight
-            position={[0, 40, 200]}      // Offset from camera, above and slightly forward
-            angle={0.25}
-            penumbra={0.8}
-            intensity={2}
+            position={[0, 40, 200]}
+            angle={0.22}
+            penumbra={1}
+            intensity={2.5}
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
             shadow-bias={-0.0001}
-            target-position={[0, 0, 0]}  // Aim at the origin/model
+            target-position={[0, 0, 0]}
           />
           {/* Subtle fill light from behind for rim lighting */}
           <directionalLight
             position={[0, 30, -100]}
-            intensity={0.2}
+            intensity={0.3}
           />
           <Suspense fallback={null}>
             <FloatingObjModel />
+            <ShadowPlane />
           </Suspense>
-          <ShadowPlane />
           <OrbitControls
             enablePan={false}
             enableZoom={false}
             target={[0, 0, 0]}
             minPolarAngle={0.2}
             maxPolarAngle={Math.PI - 0.2}
+            onEnd={() => setLoading(false)} // Hide loader once user interacts
           />
         </Canvas>
+        {/* Drei's built-in loader (optional, can be removed if not needed) */}
+        <Loader
+          containerStyles={{
+            background: "rgba(0,0,0,0.85)",
+            color: "#0ff"
+          }}
+          barStyles={{
+            background: "#0ff"
+          }}
+          dataInterpolation={p => `Loading ${Math.round(p)}%`}
+        />
       </div>
     </div>
   );
