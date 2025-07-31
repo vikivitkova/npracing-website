@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense } from "react";
 import * as THREE from "three";
 import { Canvas, useLoader, useThree } from "@react-three/fiber";
-import { OrbitControls, Environment } from "@react-three/drei";
+import { OrbitControls, Environment, Center } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (shrunk 20%)
@@ -34,7 +34,7 @@ function NPLogo({ size = 336 }) {
               strokeWidth: 2.21112,
             }}
           >
-            {/* RACING text paths */}
+            {/* RACING text */}
             <path d="m 53.020878,195.78621 h -2.060221 l -2.610554,-2.65289 h -1.509887 v 2.65289 H 45.23155 v -7.02733 h 6.02544 q 1.580443,0 1.580443,1.22767 v 1.91911 q 0,0.889 -0.818444,1.22766 h -1.693332 z m -1.763888,-4.41678 v -0.84666 q 0,-0.55033 -0.465666,-0.55033 h -3.951108 v 1.96144 h 3.951108 q 0.465666,0 0.465666,-0.56445 z" />
             <path d="m 69.474419,195.78621 h -1.566332 l -0.917222,-1.53811 h -4.571996 l -0.874888,1.53811 h -1.622777 l 3.965219,-7.05555 h 1.566332 z m -3.217331,-2.82222 -1.580443,-2.86455 -1.566332,2.86455 z" />
             <path d="m 84.756759,194.1211 q 0,0.98778 -0.380999,1.32644 -0.366889,0.33867 -1.368777,0.33867 h -4.190997 q -1.001888,0 -1.382888,-0.33867 -0.366888,-0.33866 -0.366888,-1.32644 v -3.71122 q 0,-0.97367 0.366888,-1.31233 0.381,-0.35278 1.382888,-0.35278 h 4.190997 q 1.693332,0.0141 1.749776,1.17122 v 1.03011 h -1.636887 v -0.94544 h -4.416775 v 4.45911 h 4.416775 v -1.03011 h 1.636887 z" />
@@ -43,17 +43,14 @@ function NPLogo({ size = 336 }) {
             <path d="m 130.26509,194.1211 q 0,0.98778 -0.381,1.32644 -0.36688,0.33867 -1.36877,0.33867 h -4.84011 q -1.00189,0 -1.38289,-0.33867 -0.36689,-0.33866 -0.36689,-1.32644 v -3.69711 q 0,-0.98778 0.36689,-1.32644 0.381,-0.33867 1.38289,-0.33867 h 4.84011 q 1.04422,0 1.397,0.36689 0.35277,0.35278 0.35277,1.38289 h -1.59455 v -0.49389 h -5.10822 v 4.445 h 5.10822 v -1.56634 h -2.94922 v -1.19944 h 4.54377 z" />
           </g>
         </g>
-        {/* Yellow accent paths */}
         <path
           style={{
             fill: "#ffcc00",
             strokeWidth: 1.61928,
             strokeLinecap: "round",
           }}
-          d="m 64.083427,130.25096 -9.959082,21.06022 h 4.532023 l 9.959082,-21.06022 z m 11.342977,0 -9.959082,21.06022 h 1.139465 4.505151 3.62872 l 9.959082,-21.06022 h -3.628719 -4.505152 z m 14.738635,0 -9.959082,21.06022 h 
-          1.783354 v 5.1e-4 h 13.889591 l 0.535368,-1.13223 h -0.001 l 9.42371,-19.9285 H 97.007033 91.94791 Z"
+          d="m 64.083427,130.25096 -9.959082,21.06022 h 4.532023 l 9.959082,-21.06022 z m 11.342977,0 -9.959082,21.06022 h 1.139465 4.505151 3.62872 l 9.959082,-21.06022 h -3.628719 -4.505152 z m 14.738635,0 -9.959082,21.06022 h 1.783354 v 5.1e-4 h 13.889591 l 0.535368,-1.13223 h -0.001 l 9.42371,-19.9285 H 97.007033 91.94791 Z"
         />
-        {/* White accent paths */}
         <path
           style={{
             fill: "#fff",
@@ -97,7 +94,7 @@ function LoadingScreen({ visible }) {
 function TopBar() {
   const navLinkStyle = {
     color: "#fff",
-    fontSize: 20, // smaller text
+    fontSize: 20,
     fontWeight: 700,
     letterSpacing: 1,
     marginRight: 24,
@@ -135,13 +132,21 @@ function TopBar() {
         <NPLogo size={176} />
       </a>
       <nav style={{ display: "flex", alignItems: "center" }}>
-        <a href="/" style={navLinkStyle}>Home</a>
+        <a href="/" style={navLinkStyle}>
+          Home
+        </a>
         <span style={navDotStyle}>•</span>
-        <a href="/team.html" style={navLinkStyle}>Team</a>
+        <a href="/team.html" style={navLinkStyle}>
+          Team
+        </a>
         <span style={navDotStyle}>•</span>
-        <a href="/schedule.html" style={navLinkStyle}>Schedule</a>
+        <a href="/schedule.html" style={navLinkStyle}>
+          Schedule
+        </a>
         <span style={navDotStyle}>•</span>
-        <a href="/contact.html" style={navLinkStyle}>Contact</a>
+        <a href="/contact.html" style={navLinkStyle}>
+          Contact
+        </a>
       </nav>
     </div>
   );
@@ -186,14 +191,15 @@ function ShadowPlane() {
   );
 }
 
-// HeadLight moves with the camera so light direction is stable relative to view
-function HeadLight({ intensity = 1.5 }) {
+// HeadLight moves with the camera so lighting stays consistent
+function HeadLight({ intensity = 2.0 }) {
   const { camera } = useThree();
   useEffect(() => {
     const light = new THREE.DirectionalLight(0xffffff, intensity);
     light.castShadow = true;
     light.shadow.bias = 0.005;
     light.shadow.normalBias = 0.2;
+    light.shadow.mapSize.set(4096, 4096);
     camera.add(light);
     return () => camera.remove(light);
   }, [camera, intensity]);
@@ -238,24 +244,23 @@ function ThreeDCar() {
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
         }}
       >
-        {/* base fill so shadows aren’t pure black */}
-        <ambientLight intensity={0.3} />
-
-        {/* environment HDR reflections */}
+        {/* hemisphere fill for sky/ground contrast */}
+        <hemisphereLight skyColor={0xffffff} groundColor={0x444444} intensity={0.6} />
+        {/* ambient fill */}
+        <ambientLight intensity={0.4} />
+        {/* environment reflections */}
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
-
-        {/* camera‐attached directional “headlight” */}
+        {/* camera‐attached headlight */}
         <HeadLight intensity={2.0} />
-
-        {/* your model and ground plane */}
+        {/* centered model */}
         <Suspense fallback={null}>
-          <FloatingObjModel onLoad={() => setLoading(false)} />
+          <Center>
+            <FloatingObjModel onLoad={() => setLoading(false)} />
+          </Center>
           <ShadowPlane />
         </Suspense>
-
-        {/* controls */}
         <OrbitControls
           enablePan={false}
           enableZoom={false}
