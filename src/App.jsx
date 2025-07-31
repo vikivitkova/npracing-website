@@ -1,6 +1,7 @@
-import React from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Html, Model } from "@react-three/drei";
+import React, { Suspense } from "react";
+import { Canvas, useLoader } from "@react-three/fiber";
+import { OrbitControls, Html } from "@react-three/drei";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 function Halo() {
   return (
@@ -16,16 +17,20 @@ function Halo() {
   );
 }
 
+// OBJ Model Loader Component
+function FloatingObjModel() {
+  const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj");
+  return <primitive object={obj} scale={2} position={[0, 0, 0]} />;
+}
+
 function FloatingModel() {
   return (
     <group>
       <Halo />
-      {/* Custom OBJ model loaded from public/models */}
-      <Model
-        url="/models/F1 in schools v171 body.obj"
-        scale={2}
-        position={[0, 0, 0]}
-      />
+      {/* Suspense is recommended for async models */}
+      <Suspense fallback={<Html center>Loading Model...</Html>}>
+        <FloatingObjModel />
+      </Suspense>
       {/* Subtle shadow effect via Html */}
       <Html position={[0, -2.1, 0]} center>
         <div
