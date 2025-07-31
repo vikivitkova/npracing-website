@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
+import * as THREE from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
@@ -13,7 +14,10 @@ function NPLogo({ size = 220 }) {
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: "block" }}
     >
-      {/* full original paths omitted for brevity; include all paths here */}
+      {/* RACING text paths */}
+      <g transform="translate(-54.124261,-130.25079)">
+        {/* ... include all path elements exactly as original source ... */}
+      </g>
     </svg>
   );
 }
@@ -54,7 +58,7 @@ function TopBar() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "0 48px",
+        padding: "0 24px",
         boxSizing: "border-box",
         position: "fixed",
         top: 0,
@@ -64,7 +68,7 @@ function TopBar() {
         fontFamily: "'Inconsolata', monospace"
       }}>
       <a href="/" style={{ display: "block" }}>
-        <NPLogo size={120} />
+        <NPLogo size={100} />
       </a>
       <nav style={{ display: "flex", alignItems: "center" }}>
         <a href="/" style={navLinkStyle}>Home</a>
@@ -81,10 +85,10 @@ function TopBar() {
 
 const navLinkStyle = {
   color: "#fff",
-  fontSize: 20,
+  fontSize: 18,
   fontWeight: 700,
   letterSpacing: 1,
-  marginRight: 24,
+  marginRight: 16,
   fontFamily: "'Inconsolata', monospace",
   textDecoration: "none",
   cursor: "pointer"
@@ -93,20 +97,21 @@ const navLinkStyle = {
 const navDotStyle = {
   color: "#ffcc00",
   fontWeight: 700,
-  fontSize: 24,
-  marginRight: 24
+  fontSize: 20,
+  marginRight: 16
 };
 
 function FloatingObjModel({ onLoad }) {
   const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj", undefined, onLoad);
 
-  // Apply polygon offset to prevent z-fighting/flicker
+  // apply polygon offset and update material
   useEffect(() => {
     obj.traverse((child) => {
       if (child.isMesh) {
         child.material.polygonOffset = true;
         child.material.polygonOffsetFactor = 1;
         child.material.polygonOffsetUnits = 1;
+        child.material.needsUpdate = true;
       }
     });
   }, [obj]);
@@ -153,9 +158,10 @@ function ThreeDCar() {
   return (
     <div
       style={{
-        width: "100%",
-        height: "100%",
+        width: "800px",
+        height: "600px",
         background: "#000",
+        borderRadius: 16,
         position: "relative"
       }}>
       <LoadingScreen visible={loading} />
@@ -163,8 +169,8 @@ function ThreeDCar() {
         shadows
         gl={{
           antialias: true,
-          toneMapping: 1,
-          outputEncoding: 3001
+          toneMapping: THREE.ACESFilmicToneMapping,
+          outputEncoding: THREE.sRGBEncoding
         }}
         camera={{ position: [0, 0, 200000], fov: 7, near: 0.1, far: 1000000 }}
         style={{ background: "transparent" }}
@@ -176,28 +182,20 @@ function ThreeDCar() {
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
-        <spotLight
-          position={[0, 50000, 200000]}
-          angle={0.12}
-          penumbra={1}
-          intensity={2.5}
+        <directionalLight
           castShadow
-          shadow-mapSize-width={4096}
-          shadow-mapSize-height={4096}
-          shadow-bias={0.002}
-          shadow-normalBias={0.1}
+          intensity={1.5}
+          position={[0, 100000, 100000]}
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-bias={-0.001}
+          shadow-normalBias={0.05}
         />
         <Suspense fallback={null}>
           <FloatingObjModel onLoad={handleModelLoaded} />
           <ShadowPlane />
         </Suspense>
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          target={[0, 0, 0]}
-          minPolarAngle={0.2}
-          maxPolarAngle={Math.PI - 0.2}
-        />
+        <OrbitControls enablePan={false} enableZoom={false} target={[0, 0, 0]} minPolarAngle={0.2} maxPolarAngle={Math.PI - 0.2} />
       </Canvas>
     </div>
   );
@@ -221,15 +219,16 @@ export default function App() {
         flexDirection: "column",
         background: "#000",
         fontFamily: "'Inconsolata', monospace",
-        overflow: "hidden"
+        overflow: "hidden",
+        alignItems: "center",
+        justifyContent: "center"
       }}
     >
       <TopBar />
-      <div
-        style={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <ThreeDCar />
-      </div>
+      <ThreeDCar />
     </div>
+  );
+}
+
   );
 }
