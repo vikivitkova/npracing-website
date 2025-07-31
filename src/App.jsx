@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, Suspense } from "react";
+import { Canvas, useLoader } from "@react-three/fiber";
+import { OrbitControls, Environment } from "@react-three/drei";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
-// Inline NP Racing SVG Logo
-function NPLogo({ size = 160 }) {
+// NP Racing SVG Logo
+function NPLogo({ size = 420 }) {
   return (
     <svg
       width={size}
@@ -61,100 +64,6 @@ function NPLogo({ size = 160 }) {
   );
 }
 
-// Top bar menu
-function TopBar() {
-  return (
-    <div
-      style={{
-        width: "100vw",
-        height: "90px",
-        background: "#000",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 48px",
-        boxSizing: "border-box",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 10,
-        borderBottom: "1px solid #222",
-        fontFamily: "'Inconsolata', monospace"
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", minWidth: 180 }}>
-        <a href="/" style={{ display: "block" }}>
-          <NPLogo size={220} />
-        </a>
-      </div>
-      <nav style={{ display: "flex", alignItems: "center", marginLeft: 48 }}>
-        <a
-          href="/"
-          style={{
-            color: "#fff",
-            fontSize: 28,
-            fontWeight: 700,
-            letterSpacing: 1,
-            marginRight: 32,
-            fontFamily: "'Inconsolata', monospace",
-            textDecoration: "none",
-            cursor: "pointer"
-          }}
-        >
-          Home
-        </a>
-        <span style={{ color: "#ffcc00", fontWeight: 700, fontSize: 36, marginRight: 32 }}>•</span>
-        <a
-          href="/team.html"
-          style={{
-            color: "#fff",
-            fontSize: 28,
-            fontWeight: 700,
-            letterSpacing: 1,
-            marginRight: 32,
-            fontFamily: "'Inconsolata', monospace",
-            textDecoration: "none",
-            cursor: "pointer"
-          }}
-        >
-          Team
-        </a>
-        <span style={{ color: "#ffcc00", fontWeight: 700, fontSize: 36, marginRight: 32 }}>•</span>
-        <a
-          href="/schedule.html"
-          style={{
-            color: "#fff",
-            fontSize: 28,
-            fontWeight: 700,
-            letterSpacing: 1,
-            marginRight: 32,
-            fontFamily: "'Inconsolata', monospace",
-            textDecoration: "none",
-            cursor: "pointer"
-          }}
-        >
-          Schedule
-        </a>
-        <span style={{ color: "#ffcc00", fontWeight: 700, fontSize: 36, marginRight: 32 }}>•</span>
-        <a
-          href="/contact.html"
-          style={{
-            color: "#fff",
-            fontSize: 28,
-            fontWeight: 700,
-            letterSpacing: 1,
-            marginRight: 32,
-            fontFamily: "'Inconsolata', monospace",
-            textDecoration: "none",
-            cursor: "pointer"
-          }}
-        >
-          Contact
-        </a>
-      </nav>
-    </div>
-  );
-}
-
 function LoadingScreen({ visible }) {
   if (!visible) return null;
   return (
@@ -181,11 +90,61 @@ function LoadingScreen({ visible }) {
   );
 }
 
-// 3D Model (car scaling 3000!)
-import { Canvas, useLoader } from "@react-three/fiber";
-import { OrbitControls, Environment } from "@react-three/drei";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+function TopBar() {
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "90px",
+        background: "#000",
+        display: "flex",
+        alignItems: "center",
+        padding: "0 48px",
+        boxSizing: "border-box",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 10,
+        borderBottom: "1px solid #222",
+        fontFamily: "'Inconsolata', monospace"
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", minWidth: 180 }}>
+        <a href="/" style={{ display: "block" }}>
+          <NPLogo size={220} />
+        </a>
+      </div>
+      <nav style={{ display: "flex", alignItems: "center", marginLeft: 48 }}>
+        <a href="/" style={navLinkStyle}>Home</a>
+        <span style={navDotStyle}>•</span>
+        <a href="/team.html" style={navLinkStyle}>Team</a>
+        <span style={navDotStyle}>•</span>
+        <a href="/schedule.html" style={navLinkStyle}>Schedule</a>
+        <span style={navDotStyle}>•</span>
+        <a href="/contact.html" style={navLinkStyle}>Contact</a>
+      </nav>
+    </div>
+  );
+}
+const navLinkStyle = {
+  color: "#fff",
+  fontSize: 28,
+  fontWeight: 700,
+  letterSpacing: 1,
+  marginRight: 32,
+  fontFamily: "'Inconsolata', monospace",
+  textDecoration: "none",
+  cursor: "pointer"
+};
+const navDotStyle = {
+  color: "#ffcc00",
+  fontWeight: 700,
+  fontSize: 36,
+  marginRight: 32
+};
+
 function FloatingObjModel({ onLoad }) {
+  // Use the built-in callback from useLoader for load detection
   const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj", undefined, onLoad);
   return (
     <primitive
@@ -197,6 +156,7 @@ function FloatingObjModel({ onLoad }) {
     />
   );
 }
+
 function ShadowPlane() {
   return (
     <mesh
@@ -209,8 +169,10 @@ function ShadowPlane() {
     </mesh>
   );
 }
+
 function ThreeDCar() {
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -218,9 +180,12 @@ function ThreeDCar() {
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
+
+  // Use a callback for when model loads
   function handleModelLoaded() {
     setLoading(false);
   }
+
   return (
     <div style={{ width: "100%", height: "500px", background: "#000", borderRadius: 16, position: "relative" }}>
       <LoadingScreen visible={loading} />
@@ -240,7 +205,7 @@ function ThreeDCar() {
         style={{
           background: "transparent"
         }}
-        onCreated={({ gl, scene }) => {
+        onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = 2;
         }}
@@ -248,7 +213,7 @@ function ThreeDCar() {
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
-        {/* SINGLE fixed spotlight in world space */}
+        {/* SINGLE fixed spotlight in WORLD space, NOT child of model */}
         <spotLight
           position={[0, 50000, 200000]}
           angle={0.12}
