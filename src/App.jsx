@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
@@ -148,7 +149,7 @@ function FloatingObjModel({ onLoad }) {
   return (
     <primitive
       object={obj}
-      scale={300}
+      scale={3000}
       position={[0, 0, 0]}
       castShadow
       receiveShadow
@@ -260,8 +261,13 @@ export default function App() {
       }}
     >
       <TopBar />
-      <div style={{ paddingTop: 110 }}>
-        <ThreeDCar />
+      <div style={{
+        paddingTop: 110,
+        fontFamily: "'Inconsolata', monospace",
+        color: "#fff"
+      }};
+          <ThreeDCar />
+        </div>
       </div>
     </div>
   );
