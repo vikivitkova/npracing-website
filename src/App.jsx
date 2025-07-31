@@ -1,7 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react";
-import { Canvas, useLoader } from "@react-three/fiber";
-import { OrbitControls, Environment } from "@react-three/drei";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import React, { useEffect } from "react";
 
 // Inline NP Racing SVG Logo
 function NPLogo({ size = 160 }) {
@@ -65,13 +62,7 @@ function NPLogo({ size = 160 }) {
 }
 
 // Top bar menu
-function TopBar({ active, onMenuClick }) {
-  const menuItems = [
-    { label: "Home", key: "home" },
-    { label: "Team", key: "team" },
-    { label: "Schedule", key: "schedule" },
-    { label: "Contact", key: "contact" }
-  ];
+function TopBar() {
   return (
     <div
       style={{
@@ -91,44 +82,79 @@ function TopBar({ active, onMenuClick }) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", minWidth: 180 }}>
-        <NPLogo size={160} />
+        <a href="/" style={{ display: "block" }}>
+          <NPLogo size={220} />
+        </a>
       </div>
-      <nav style={{ display: "flex", alignItems: "center", marginLeft: 40 }}>
-        {menuItems.map((item, idx) => (
-          <React.Fragment key={item.key}>
-            <span
-              style={{
-                color: active === item.key ? "#ffcc00" : "#fff",
-                fontSize: 28,
-                fontWeight: 700,
-                letterSpacing: 1,
-                marginRight: idx !== menuItems.length - 1 ? 32 : 0,
-                fontFamily: "'Inconsolata', monospace",
-                cursor: "pointer",
-                transition: "color 0.2s"
-              }}
-              onClick={() => onMenuClick(item.key)}
-            >
-              {item.label}
-            </span>
-            {idx !== menuItems.length - 1 && (
-              <span
-                style={{
-                  color: "#ffcc00",
-                  fontWeight: 700,
-                  fontSize: 36,
-                  marginRight: 32
-                }}
-              >•</span>
-            )}
-          </React.Fragment>
-        ))}
+      <nav style={{ display: "flex", alignItems: "center", marginLeft: 48 }}>
+        <a
+          href="/"
+          style={{
+            color: "#fff",
+            fontSize: 28,
+            fontWeight: 700,
+            letterSpacing: 1,
+            marginRight: 32,
+            fontFamily: "'Inconsolata', monospace",
+            textDecoration: "none",
+            cursor: "pointer"
+          }}
+        >
+          Home
+        </a>
+        <span style={{ color: "#ffcc00", fontWeight: 700, fontSize: 36, marginRight: 32 }}>•</span>
+        <a
+          href="/team.html"
+          style={{
+            color: "#fff",
+            fontSize: 28,
+            fontWeight: 700,
+            letterSpacing: 1,
+            marginRight: 32,
+            fontFamily: "'Inconsolata', monospace",
+            textDecoration: "none",
+            cursor: "pointer"
+          }}
+        >
+          Team
+        </a>
+        <span style={{ color: "#ffcc00", fontWeight: 700, fontSize: 36, marginRight: 32 }}>•</span>
+        <a
+          href="/schedule.html"
+          style={{
+            color: "#fff",
+            fontSize: 28,
+            fontWeight: 700,
+            letterSpacing: 1,
+            marginRight: 32,
+            fontFamily: "'Inconsolata', monospace",
+            textDecoration: "none",
+            cursor: "pointer"
+          }}
+        >
+          Schedule
+        </a>
+        <span style={{ color: "#ffcc00", fontWeight: 700, fontSize: 36, marginRight: 32 }}>•</span>
+        <a
+          href="/contact.html"
+          style={{
+            color: "#fff",
+            fontSize: 28,
+            fontWeight: 700,
+            letterSpacing: 1,
+            marginRight: 32,
+            fontFamily: "'Inconsolata', monospace",
+            textDecoration: "none",
+            cursor: "pointer"
+          }}
+        >
+          Contact
+        </a>
       </nav>
     </div>
   );
 }
 
-// Loading screen
 function LoadingScreen({ visible }) {
   if (!visible) return null;
   return (
@@ -149,142 +175,89 @@ function LoadingScreen({ visible }) {
       fontSize: 38,
       letterSpacing: 2
     }}>
-      <NPLogo size={320} />
+      <NPLogo size={420} />
       <div style={{marginTop: 42}}>Loading Model...</div>
     </div>
   );
 }
 
-// 3D Model
+// 3D Model (car scaling 3000!)
+import { Canvas, useLoader } from "@react-three/fiber";
+import { OrbitControls, Environment } from "@react-three/drei";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 function FloatingObjModel({ onLoad }) {
   const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj", undefined, onLoad);
   return (
     <primitive
       object={obj}
-      scale={2500}
+      scale={3000}
       position={[0, 0, 0]}
       castShadow
       receiveShadow
     />
   );
 }
-
-// Shadow plane for realistic shadow
 function ShadowPlane() {
   return (
     <mesh
-      position={[0, -12, 0]}
+      position={[0, -36000, 0]}
       rotation={[-Math.PI / 2, 0, 0]}
       receiveShadow
     >
-      <planeGeometry args={[100, 100]} />
+      <planeGeometry args={[300000, 300000]} />
       <shadowMaterial opacity={0.35} />
     </mesh>
   );
 }
-
-// Placeholder Page Content
-function PageContent({ page }) {
-  const pageStyles = {
-    fontFamily: "'Inconsolata', monospace",
-    color: "#fff",
-    padding: "110px 48px 0 48px",
-    minHeight: "calc(100vh - 90px)",
-    background: "#000"
-  };
-  switch (page) {
-    case "home":
-      return (
-        <div style={pageStyles}>
-          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>NP Racing</h1>
-          <p style={{ fontSize: 24 }}>Welcome to NP Racing's F1 in Schools Team! Explore the car in 3D, meet our team, view the schedule, and contact us.</p>
-          <div style={{ height: 400, marginTop: 48, position: "relative" }}>
-            {/* 3D Canvas inserted below */}
-            <ThreeDCar />
-          </div>
-        </div>
-      );
-    case "team":
-      return (
-        <div style={pageStyles}>
-          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>Our Team</h1>
-          <p style={{ fontSize: 24 }}>Meet the talented members behind NP Racing. (Team bios, roles, photos go here.)</p>
-        </div>
-      );
-    case "schedule":
-      return (
-        <div style={pageStyles}>
-          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>Schedule</h1>
-          <p style={{ fontSize: 24 }}>Check out our upcoming events, races, and milestones. (Schedule details go here.)</p>
-        </div>
-      );
-    case "contact":
-      return (
-        <div style={pageStyles}>
-          <h1 style={{ color: "#ffcc00", fontSize: 44, marginBottom: 24 }}>Contact Us</h1>
-          <p style={{ fontSize: 24 }}>Reach out to NP Racing for any inquiries. (Contact form or info goes here.)</p>
-        </div>
-      );
-    default:
-      return null;
-  }
-}
-
-// 3D Canvas isolated for Home page only
 function ThreeDCar() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = React.useState(true);
   useEffect(() => {
-    // Ensure font loads
     const link = document.createElement("link");
     link.href =
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
-
   function handleModelLoaded() {
     setLoading(false);
   }
-
   return (
-    <div style={{ width: "100%", height: "400px", background: "#000", borderRadius: 16, position: "relative" }}>
+    <div style={{ width: "100%", height: "500px", background: "#000", borderRadius: 16, position: "relative" }}>
       <LoadingScreen visible={loading} />
       <Canvas
         shadows
         gl={{
           antialias: true,
-          toneMapping: 1, // THREE.ReinhardToneMapping
-          outputEncoding: 3001, // THREE.sRGBEncoding
+          toneMapping: 1,
+          outputEncoding: 3001,
         }}
         camera={{
-          position: [0, 0, 200],
-          fov: 10,
+          position: [0, 0, 200000],
+          fov: 7,
           near: 0.1,
-          far: 1000
+          far: 1000000
         }}
         style={{
           background: "transparent"
         }}
-        onCreated={({ gl }) => {
+        onCreated={({ gl, scene }) => {
           gl.shadowMap.enabled = true;
-          gl.shadowMap.type = 2; // THREE.PCFSoftShadowMap
+          gl.shadowMap.type = 2;
         }}
       >
-        {/* HDRI environment for realistic reflections, but only for indirect lighting */}
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
-        {/* Single spotlight, fixed in scene coordinates */}
+        {/* SINGLE fixed spotlight in world space */}
         <spotLight
-          position={[0, 50, 200]}
-          angle={0.17}
+          position={[0, 50000, 200000]}
+          angle={0.12}
           penumbra={1}
           intensity={2.5}
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
           shadow-bias={-0.0001}
-          target-position={[0, 0, 0]}
           color="#fff"
         />
         <Suspense fallback={null}>
@@ -303,19 +276,14 @@ function ThreeDCar() {
   );
 }
 
-// Main App
 export default function App() {
-  const [activePage, setActivePage] = useState("home");
-
   useEffect(() => {
-    // Load Google Fonts
     const link = document.createElement("link");
     link.href =
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
-
   return (
     <div
       style={{
@@ -327,9 +295,17 @@ export default function App() {
         fontFamily: "'Inconsolata', monospace"
       }}
     >
-      <TopBar active={activePage} onMenuClick={setActivePage} />
-      <div style={{ paddingTop: 90 }}>
-        <PageContent page={activePage} />
+      <TopBar />
+      <div style={{
+        paddingTop: 110,
+        fontFamily: "'Inconsolata', monospace",
+        color: "#fff"
+      }}>
+        <h1 style={{ color: "#ffcc00", fontSize: 54, marginBottom: 24 }}>NP Racing</h1>
+        <p style={{ fontSize: 28 }}>Welcome to NP Racing's F1 in Schools Team! Explore the car in 3D, meet our team, view the schedule, and contact us.</p>
+        <div style={{ marginTop: 48 }}>
+          <ThreeDCar />
+        </div>
       </div>
     </div>
   );
