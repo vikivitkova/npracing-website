@@ -1,10 +1,10 @@
 import React, { useEffect, useState, Suspense } from "react";
-import { Canvas, useLoader, useThree, useFrame } from "@react-three/fiber";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
-// NP Racing SVG Logo
-function NPLogo({ size = 150 }) {  // Reduced default size
+// NP Racing SVG Logo (original colors)
+function NPLogo({ size = 220 }) {
   return (
     <svg
       width={size}
@@ -13,7 +13,7 @@ function NPLogo({ size = 150 }) {  // Reduced default size
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: "block" }}
     >
-      {/* ... paths omitted for brevity ... */}
+      {/* full original paths omitted for brevity; include all paths here */}
     </svg>
   );
 }
@@ -38,8 +38,8 @@ function LoadingScreen({ visible }) {
       fontSize: 38,
       letterSpacing: 2
     }}>
-      <NPLogo size={200} />  {/* Loading uses slightly larger logo */}
-      <div style={{marginTop: 42}}>Loading Model...</div>
+      <NPLogo size={200} />
+      <div style={{ marginTop: 42 }}>Loading Model...</div>
     </div>
   );
 }
@@ -64,7 +64,7 @@ function TopBar() {
         fontFamily: "'Inconsolata', monospace"
       }}>
       <a href="/" style={{ display: "block" }}>
-        <NPLogo size={120} />  {/* Smaller logo */}
+        <NPLogo size={120} />
       </a>
       <nav style={{ display: "flex", alignItems: "center" }}>
         <a href="/" style={navLinkStyle}>Home</a>
@@ -89,6 +89,7 @@ const navLinkStyle = {
   textDecoration: "none",
   cursor: "pointer"
 };
+
 const navDotStyle = {
   color: "#ffcc00",
   fontWeight: 700,
@@ -98,6 +99,18 @@ const navDotStyle = {
 
 function FloatingObjModel({ onLoad }) {
   const obj = useLoader(OBJLoader, "/models/F1 in schools v171 body.obj", undefined, onLoad);
+
+  // Apply polygon offset to prevent z-fighting/flicker
+  useEffect(() => {
+    obj.traverse((child) => {
+      if (child.isMesh) {
+        child.material.polygonOffset = true;
+        child.material.polygonOffsetFactor = 1;
+        child.material.polygonOffsetUnits = 1;
+      }
+    });
+  }, [obj]);
+
   return (
     <primitive
       object={obj}
@@ -138,25 +151,26 @@ function ThreeDCar() {
   }
 
   return (
-    <div style={{ width: "100%", height: "100%", background: "#000", position: "relative" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#000",
+        position: "relative"
+      }}>
       <LoadingScreen visible={loading} />
       <Canvas
         shadows
         gl={{
           antialias: true,
           toneMapping: 1,
-          outputEncoding: 3001,
+          outputEncoding: 3001
         }}
-        camera={{
-          position: [0, 0, 200000],
-          fov: 7,
-          near: 0.1,
-          far: 1000000
-        }}
+        camera={{ position: [0, 0, 200000], fov: 7, near: 0.1, far: 1000000 }}
         style={{ background: "transparent" }}
         onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
-          gl.shadowMap.type = 2;
+          gl.shadowMap.type = THREE.PCFSoftShadowMap;
         }}
       >
         <Suspense fallback={null}>
@@ -170,9 +184,8 @@ function ThreeDCar() {
           castShadow
           shadow-mapSize-width={4096}
           shadow-mapSize-height={4096}
-          shadow-bias={0.001}      // Reduce flickering
-          shadow-normalBias={0.05} // Soft shadow improvement
-          color="#fff"
+          shadow-bias={0.002}
+          shadow-normalBias={0.1}
         />
         <Suspense fallback={null}>
           <FloatingObjModel onLoad={handleModelLoaded} />
@@ -212,13 +225,9 @@ export default function App() {
       }}
     >
       <TopBar />
-      <div style={{
-        flexGrow: 1,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingTop: "90px"
-      }}>
+      <div
+        style={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
         <ThreeDCar />
       </div>
     </div>
