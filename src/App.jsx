@@ -113,15 +113,13 @@ function LoadingScreen() {
   );
 }
 
-// Interactive model: free drag-to-orbit on both axes while mouse held
-function InteractiveModel({ onLoad }) {
+// Interactive model with global drag-to-orbit
+function InteractiveModel({ onLoad, dragControls }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
   const group = useRef();
-  const dragging = useRef(false);
-  const prev = useRef({ x: 0, y: 0 });
   const [initialized, setInitialized] = useState(false);
 
-  // z-fight fix + onLoad callback
+  // z-fight fix + onLoad
   useEffect(() => {
     if (obj && !initialized) {
       obj.traverse(c => {
@@ -136,36 +134,13 @@ function InteractiveModel({ onLoad }) {
       });
       onLoad();
       setInitialized(true);
+      // register group in parent dragControls
+      dragControls.current = group.current;
     }
-  }, [obj, initialized, onLoad]);
-
-  // pointer event handlers
-  const onPointerDown = e => {
-    e.stopPropagation();
-    dragging.current = true;
-    prev.current = { x: e.clientX, y: e.clientY };
-  };
-  const onPointerUp = e => {
-    e.stopPropagation();
-    dragging.current = false;
-  };
-  const onPointerMove = e => {
-    if (!dragging.current) return;
-    e.stopPropagation();
-    const dx = e.clientX - prev.current.x;
-    const dy = e.clientY - prev.current.y;
-    group.current.rotation.y += dx * 0.005; // yaw
-    group.current.rotation.x += dy * 0.005; // pitch
-    prev.current = { x: e.clientX, y: e.clientY };
-  };
+  }, [obj, initialized, onLoad, dragControls]);
 
   return (
-    <group
-      ref={group}
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
-      onPointerMove={onPointerMove}
-    >
+    <group ref={group}>
       <primitive object={obj} scale={600000} position={[0, 0, 0.5]} />
     </group>
   );
@@ -184,15 +159,41 @@ function ShadowPlane() {
 // Main 3D component
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
+  const dragControls = useRef({});         // will hold group ref
+  const dragging = useRef(false);
+  const prev = useRef({ x: 0, y: 0 });
 
-  // inject Inconsolata
+  // load font
   useEffect(() => {
     const link = document.createElement("link");
-    link.href = 
+    link.href =
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
+
+  // pointer handlers on canvas DOM
+  const onPointerDown = e => {
+    e.preventDefault();
+    dragging.current = true;
+    prev.current = { x: e.clientX, y: e.clientY };
+  };
+  const onPointerUp = e => {
+    e.preventDefault();
+    dragging.current = false;
+  };
+  const onPointerMove = e => {
+    if (!dragging.current || !dragControls.current) return;
+    e.preventDefault();
+    const dx = e.clientX - prev.current.x;
+    const dy = e.clientY - prev.current.y;
+    const g = dragControls.current;
+    g.rotation.y += dx * 0.005;    // yaw
+    g.rotation.x += dy * 0.005;    // pitch
+    // clamp pitch between -90° and +90°
+    g.rotation.x = THREE.MathUtils.clamp(g.rotation.x, -Math.PI/2, Math.PI/2);
+    prev.current = { x: e.clientX, y: e.clientY };
+  };
 
   return (
     <div style={{
@@ -200,33 +201,37 @@ function ThreeDCar() {
       marginTop: 90,
       width: "100%",
       height: "calc(100vh - 90px)",
-      background: "#000"
+      background: "#000",
+      overflow: "hidden"
     }}>
       {loading && <LoadingScreen />}
 
       <Canvas
         shadows
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerMove={onPointerMove}
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
           outputColorSpace: THREE.SRGBColorSpace
         }}
-        camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
+        camera={{ position: [0,0,200000], fov:7, near:10000, far:500000 }}
         style={{ background: "#000", width: "100%", height: "100%" }}
         onCreated={({ gl, scene }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
           gl.toneMappingExposure = 1.25;
-          scene.add(new THREE.AxesHelper(50000));
+          scene.add(new THREE.AxesHelper(50000)); // invisible axis for debugging
         }}
       >
         {/* subtle fill */}
         <ambientLight intensity={0.2} />
-        {/* fixed directional light */}
+        {/* fixed directional key light */}
         <directionalLight
           castShadow
           intensity={2}
-          position={[0, 150000, 150000]}
+          position={[0,150000,150000]}
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
           shadow-bias={-0.0005}
@@ -234,12 +239,16 @@ function ThreeDCar() {
         />
 
         <Suspense fallback={null}>
+          {/* reflections only */}
           <Environment preset="city" background={false} />
         </Suspense>
 
         <Suspense fallback={null}>
           <Center>
-            <InteractiveModel onLoad={() => setLoading(false)} />
+            <InteractiveModel
+              onLoad={() => setLoading(false)}
+              dragControls={dragControls}
+            />
             <ShadowPlane />
           </Center>
         </Suspense>
