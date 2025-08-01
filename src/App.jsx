@@ -351,15 +351,6 @@ function ThreeDCar() {
             bias={0.0001}
           />
         </AccumulativeShadows>
-
-        <Suspense fallback={null}>
-          <Center>
-            <InteractiveModel
-              onLoad={() => setLoading(false)}
-              controlRef={modelRef}
-              scale={modelScale}
-            />
-          </Center>
         </Suspense>
       </Canvas>
     </div>
