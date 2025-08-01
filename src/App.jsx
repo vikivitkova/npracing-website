@@ -211,68 +211,68 @@ function ThreeDCar() {
       <LoadingScreen visible={loading} />
 
       <Canvas
-        shadows
-        gl={{
-          antialias: true,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          outputColorSpace: THREE.SRGBColorSpace
-        }}
-        camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
-        style={{ background: "#000", width: "100%", height: "100%" }}
-        onCreated={({ gl }) => {
-          gl.shadowMap.enabled = true;
-          gl.shadowMap.type = THREE.PCFSoftShadowMap;
-          // boost the overall exposure so your directional light actually shows
-          gl.toneMappingExposure = 1.25;
-        }}
-      >
-        {/* minimal ambient fill */}
-        <ambientLight intensity={0.3} />
+  shadows
+  gl={{
+    antialias: true,
+    toneMapping: THREE.ACESFilmicToneMapping,
+    outputColorSpace: THREE.SRGBColorSpace,
+  }}
+  camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
+  style={{ background: "#000", width: "100%", height: "100%" }}
+  onCreated={({ gl, scene }) => {
+    gl.shadowMap.enabled = true;
+    gl.shadowMap.type = THREE.PCFSoftShadowMap;
+    gl.toneMappingExposure = 1.25;
 
-        <hemisphereLight
-          skyColor={0xffffff}
-          groundColor={0x222222}
-          intensity={0.4}
-        />
-        {/* fixed directional key light */}
-        <directionalLight
-          castShadow
-          intensity={2}
-          color={0xffffff}
-          position={[100000, 200000, 300000]}
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-bias={-0.0005}
-          shadow-normalBias={0.1}
-        />
+    // Add a small axes helper at the origin so you can see the pivot
+    const axes = new THREE.AxesHelper(50000);
+    scene.add(axes);
+  }}
+>
+  {/* fill so nothing is totally black */}
+  <ambientLight intensity={0.3} />
 
-        {/* environment for reflections */}
-        <Suspense fallback={null}>
-          <Center>
-            <FloatingObjModel onLoad={() => setLoading(false)} />
-            <ShadowPlane />
-          </Center>
-        </Suspense>
+  {/* sky/ground bounce */}
+  <hemisphereLight intensity={0.4} />
 
-        {/* center and render model + plane */}
-        <Suspense fallback={null}>
-          <Center>
-            <FloatingObjModel onLoad={() => setLoading(false)} />
-            <ShadowPlane />
-          </Center>
-        </Suspense>
+  {/* repositioned directional light */}
+  <directionalLight
+    castShadow
+    intensity={2}
+    color={0xffffff}
+    // moved to camera’s upper‐right, pointing back at origin
+    position={[0, 150000, 150000]}
+    target-position={[0, 0, 0]}
+    shadow-mapSize-width={2048}
+    shadow-mapSize-height={2048}
+    shadow-bias={-0.0005}
+    shadow-normalBias={0.1}
+  />
 
-        {/* camera-only orbit controls */}
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          enableDamping
-          dampingFactor={0.1}
-          target={[0, 0, 0]}
-          minPolarAngle={0.2}
-          maxPolarAngle={Math.PI - 0.2}
-        />
-      </Canvas>
+  {/* show the light’s helper so you can see where it is */}
+  <directionalLightHelper args={[ /* light ref will auto attach */ , 50000]} />
+
+  <Suspense fallback={null}>
+    <Environment preset="city" background />
+  </Suspense>
+
+  <Suspense fallback={null}>
+    <Center>
+      <FloatingObjModel onLoad={() => setLoading(false)} />
+      <ShadowPlane />
+    </Center>
+  </Suspense>
+
+  <OrbitControls
+    enablePan={false}
+    enableZoom={false}
+    enableDamping
+    dampingFactor={0.1}
+    target={[0, 0, 0]}
+    minPolarAngle={0.2}
+    maxPolarAngle={Math.PI - 0.2}
+  />
+</Canvas>
     </div>
   );
 }
