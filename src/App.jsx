@@ -131,22 +131,22 @@ function LoadingScreen() {
       background: "#000", display: "flex",
       alignItems: "center", justifyContent: "center",
       color: "#ffcc00", fontFamily: "'Inconsolata', monospace",
-      fontSize: 20, letterSpacing: 2, zIndex: 1000
+      fontSize: 13, letterSpacing: 2, zIndex: 1000
     }}>
-      <NPLogo size={100} />
-      <div style={{ position: "absolute", alignItems: "center", paddingTop: 50, }}>Loading…</div>
+      <NPLogo size={200} />
+      <div style={{ position: "absolute", alignItems: "center", paddingTop: 150, }}>Loading…</div>
     </div>
   );
 }
 
-function InteractiveModel({ onLoad, controlRef }) {
+function InteractiveModel({ onLoad, controlRef, scale }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
   const group = useRef();
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     if (obj && !initialized) {
-      obj.traverse(c => {
+      obj.traverse((c) => {
         if (c.isMesh) {
           c.castShadow = true;
           c.receiveShadow = true;
@@ -164,17 +164,8 @@ function InteractiveModel({ onLoad, controlRef }) {
 
   return (
     <group ref={group}>
-      <primitive object={obj} scale={600000} position={[0, 0, 0.5]} />
+      <primitive object={obj} scale={scale} position={[0, 0, 0.5]} />
     </group>
-  );
-}
-
-function ShadowPlane() {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[300000, 300000]} />
-      <shadowMaterial opacity={0.35} />
-    </mesh>
   );
 }
 
@@ -184,13 +175,9 @@ function ThreeDCar() {
   const dragging = useRef(false);
   const prev = useRef({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [modelScale, setModelScale] = useState(600000);
 
-  // Responsive camera settings
-  //const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  //const cameraSettings = isMobile
-    //? { position: [0, 0, 300000], fov: 12, near: 10000, far: 500000 }
-    //: { position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 };
-
+  // Handle mobile detection, model scale, and disable page scroll
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
@@ -198,29 +185,36 @@ function ThreeDCar() {
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     document.head.appendChild(link);
 
-    // Prevent scrolling on mobile
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      setModelScale(mobile ? 250000 : 600000);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    // prevent page scrolling
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
+
     return () => {
+      window.removeEventListener("resize", handleResize);
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
-      const handleResize = () => setIsMobile(window.innerWidth <= 768);
-      handleResize();
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  const onPointerDown = e => {
+  // Pointer controls to rotate the model
+  const onPointerDown = (e) => {
     e.preventDefault();
     dragging.current = true;
     prev.current = { x: e.clientX, y: e.clientY };
   };
-  const onPointerUp = e => {
+  const onPointerUp = (e) => {
     e.preventDefault();
     dragging.current = false;
   };
-  const onPointerMove = e => {
+  const onPointerMove = (e) => {
     if (!dragging.current || !modelRef.current) return;
     e.preventDefault();
     const dx = e.clientX - prev.current.x;
@@ -236,46 +230,41 @@ function ThreeDCar() {
     prev.current = { x: e.clientX, y: e.clientY };
   };
 
+  // Choose camera based on device
+  const cameraSettings = isMobile
+    ? { position: [0, 0, modelScale * 0.33], fov: 10, near: 10000, far: 500000 }
+    : { position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 };
+
   return (
-    <div style={{
-      top: 0,
-      left: 0,
-      right: 0,
-      background: "#000",
-      display: "flex",
-      touchAction: "none", // Prevent gestures
-      WebkitOverflowScrolling: "touch",
-      position: "absolute",
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 80,
-      width: "100vw",
-      height: isMobile ? "calc(100vh - 80px)" : "calc(100vh - 80px)",
-      background: "#000",
-      overflow: "hidden",
-      boxSizing: "border-box",
-    }}>
+    <div
+      style={{
+        position: "fixed",
+        top: 80, // below TopBar (which is 80px tall)
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "#000",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        touchAction: "none",
+      }}
+    >
       {loading && <LoadingScreen />}
 
       <Canvas
         shadows
         dpr={[1, 2]}
-        shadows
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         gl={{
           antialias: true,
-          outputColorSpace: THREE.SRGBColorSpace
+          outputColorSpace: THREE.SRGBColorSpace,
         }}
-        camera={{
-          position: isMobile ? [0, 0, 140000] : [0, 0, 200000], // <-- adjust zoom on mobile
-          fov: isMobile ? 10 : 7,
-          near: 10000,
-          far: 500000
-        }}
-        style={{ width: "100%", height: "100%", background: "#000", maxWidth: "3000px", maxHeight: "3000px", }}
-        onCreated={({ gl, scene }) => {
+        camera={cameraSettings}
+        style={{ width: "100%", height: "100%" }}
+        onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
           gl.useLegacyLights = false;
@@ -283,7 +272,11 @@ function ThreeDCar() {
           gl.toneMappingExposure = 0.6;
         }}
       >
-        <hemisphereLight skyColor={0x222222} groundColor={0x000000} intensity={0.15} />
+        <hemisphereLight
+          skyColor={0x222222}
+          groundColor={0x000000}
+          intensity={0.15}
+        />
         <directionalLight
           castShadow
           intensity={1.0}
@@ -301,7 +294,11 @@ function ThreeDCar() {
 
         <Suspense fallback={null}>
           <Center>
-            <InteractiveModel onLoad={() => setLoading(false)} controlRef={modelRef} />
+            <InteractiveModel
+              onLoad={() => setLoading(false)}
+              controlRef={modelRef}
+              scale={modelScale}
+            />
             <ShadowPlane />
           </Center>
         </Suspense>
