@@ -222,11 +222,18 @@ function ThreeDCar() {
         onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
+          // boost the overall exposure so your directional light actually shows
+          gl.toneMappingExposure = 1.25;
         }}
       >
         {/* minimal ambient fill */}
-        <ambientLight intensity={2} />
+        <ambientLight intensity={0.3} />
 
+        <hemisphereLight
+          skyColor={0xffffff}
+          groundColor={0x222222}
+          intensity={0.4}
+        />
         {/* fixed directional key light */}
         <directionalLight
           castShadow
@@ -241,7 +248,10 @@ function ThreeDCar() {
 
         {/* environment for reflections */}
         <Suspense fallback={null}>
-          <Environment preset="city" background={false} />
+          <Center>
+            <FloatingObjModel onLoad={() => setLoading(false)} />
+            <ShadowPlane />
+          </Center>
         </Suspense>
 
         {/* center and render model + plane */}
