@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
   include: ["@react-three/postprocessing"]
-  }
+  },
   build: {
     outDir: "dist",
   },
