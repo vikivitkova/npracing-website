@@ -113,13 +113,13 @@ function LoadingScreen() {
   );
 }
 
-// Interactive model with global drag-to-orbit
-function InteractiveModel({ onLoad, dragControls }) {
+// Interactive model: drag anywhere to freely rotate on X & Y
+function InteractiveModel({ onLoad, controlRef }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
   const group = useRef();
   const [initialized, setInitialized] = useState(false);
 
-  // z-fight fix + onLoad
+  // Fix z-fighting and signal load
   useEffect(() => {
     if (obj && !initialized) {
       obj.traverse(c => {
@@ -134,10 +134,9 @@ function InteractiveModel({ onLoad, dragControls }) {
       });
       onLoad();
       setInitialized(true);
-      // register group in parent dragControls
-      dragControls.current = group.current;
+      controlRef.current = group.current;
     }
-  }, [obj, initialized, onLoad, dragControls]);
+  }, [obj, initialized, onLoad, controlRef]);
 
   return (
     <group ref={group}>
@@ -146,10 +145,10 @@ function InteractiveModel({ onLoad, dragControls }) {
   );
 }
 
-// Ground plane for shadows
+// Ground plane
 function ShadowPlane() {
   return (
-    <mesh rotation={[-Math.PI/2, 0, 0]} receiveShadow>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
       <planeGeometry args={[300000, 300000]} />
       <shadowMaterial opacity={0.35} />
     </mesh>
@@ -159,11 +158,11 @@ function ShadowPlane() {
 // Main 3D component
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
-  const dragControls = useRef({});         // will hold group ref
+  const modelRef = useRef();      // will hold group to rotate
   const dragging = useRef(false);
   const prev = useRef({ x: 0, y: 0 });
 
-  // load font
+  // Load font once
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -172,7 +171,7 @@ function ThreeDCar() {
     document.head.appendChild(link);
   }, []);
 
-  // pointer handlers on canvas DOM
+  // Global pointer handlers
   const onPointerDown = e => {
     e.preventDefault();
     dragging.current = true;
@@ -183,15 +182,12 @@ function ThreeDCar() {
     dragging.current = false;
   };
   const onPointerMove = e => {
-    if (!dragging.current || !dragControls.current) return;
+    if (!dragging.current || !modelRef.current) return;
     e.preventDefault();
     const dx = e.clientX - prev.current.x;
     const dy = e.clientY - prev.current.y;
-    const g = dragControls.current;
-    g.rotation.y += dx * 0.005;    // yaw
-    g.rotation.x += dy * 0.005;    // pitch
-    // clamp pitch between -90° and +90°
-    g.rotation.x = THREE.MathUtils.clamp(g.rotation.x, -Math.PI/2, Math.PI/2);
+    modelRef.current.rotation.y += dx * 0.005; // yaw
+    modelRef.current.rotation.x += dy * 0.005; // pitch
     prev.current = { x: e.clientX, y: e.clientY };
   };
 
@@ -201,8 +197,7 @@ function ThreeDCar() {
       marginTop: 90,
       width: "100%",
       height: "calc(100vh - 90px)",
-      background: "#000",
-      overflow: "hidden"
+      background: "#000"
     }}>
       {loading && <LoadingScreen />}
 
@@ -214,24 +209,23 @@ function ThreeDCar() {
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          outputColorSpace: THREE.SRGBColorSpace
+          outputColorSpace: THREE.SRGBColorSpace,
         }}
-        camera={{ position: [0,0,200000], fov:7, near:10000, far:500000 }}
+        camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
         style={{ background: "#000", width: "100%", height: "100%" }}
-        onCreated={({ gl, scene }) => {
+        onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
           gl.toneMappingExposure = 1.25;
-          scene.add(new THREE.AxesHelper(50000)); // invisible axis for debugging
         }}
       >
-        {/* subtle fill */}
+        {/* subtle fill light */}
         <ambientLight intensity={0.2} />
         {/* fixed directional key light */}
         <directionalLight
           castShadow
           intensity={2}
-          position={[0,150000,150000]}
+          position={[0, 150000, 150000]}
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
           shadow-bias={-0.0005}
@@ -239,7 +233,7 @@ function ThreeDCar() {
         />
 
         <Suspense fallback={null}>
-          {/* reflections only */}
+          {/* reflections only, backdrop stays black */}
           <Environment preset="city" background={false} />
         </Suspense>
 
@@ -247,7 +241,7 @@ function ThreeDCar() {
           <Center>
             <InteractiveModel
               onLoad={() => setLoading(false)}
-              dragControls={dragControls}
+              controlRef={modelRef}
             />
             <ShadowPlane />
           </Center>
