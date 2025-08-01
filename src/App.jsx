@@ -241,7 +241,7 @@ function ThreeDCar() {
       top: 0,
       left: 0,
       background: "#000",
-      display: flex,
+      display: "flex",
       touchAction: "none", // Prevent gestures
       WebkitOverflowScrolling: "touch",
       position: "absolute",
