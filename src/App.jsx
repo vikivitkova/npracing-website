@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
-import { Environment, Center, useHelper, ContactShadows } from "@react-three/drei";
+import { Environment, Center, useHelper, ContactShadows, AccumulativeShadows, RandomizedLight } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (20% smaller)
@@ -333,6 +333,33 @@ function ThreeDCar() {
             opacity={0.7}
             far={500000}
           />
+        <AccumulativeShadows
+          frames={60}      // number of frames to accumulate
+          temporal         // blend over time
+          color="black"    // shadow color
+          colorBlend={2}   // how strongly shadows darken
+          opacity={1}      
+          scale={1.2}      // slightly larger than your model
+          alphaTest={0.85} // discard low‐value shadows
+        >
+          <RandomizedLight
+            amount={8}        // number of virtual lights
+            radius={2}        // how far spread
+            ambient={0.2}     // ambient contribution
+            intensity={1.5}   // light brightness
+            position={[100000, 300000, 100000]}
+            bias={0.0001}
+          />
+        </AccumulativeShadows>
+
+        <Suspense fallback={null}>
+          <Center>
+            <InteractiveModel
+              onLoad={() => setLoading(false)}
+              controlRef={modelRef}
+              scale={modelScale}
+            />
+          </Center>
         </Suspense>
       </Canvas>
     </div>
