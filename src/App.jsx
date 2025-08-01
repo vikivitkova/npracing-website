@@ -247,3 +247,5 @@ function ThreeDCar() {
     </div>
   );
 }
+
+export default App;
