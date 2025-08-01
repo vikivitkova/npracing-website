@@ -150,7 +150,7 @@ function LoadingScreen({ visible }) {
 function FloatingObjModel({ onLoad }) {
   const obj = useLoader(
     OBJLoader,
-    "/models/car.obj", // ensure your file is named car.obj in public/models
+    "/models/F1.obj", // ensure your file is named car.obj in public/models
     undefined,
     onLoad
   );
