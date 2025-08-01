@@ -215,7 +215,7 @@ function ThreeDCar() {
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          outputEncoding: THREE.sRGBEncoding,
+          outputColorSpace: THREE.SRGBColorSpace
         }}
         camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
         style={{ background: "#000", width: "100%", height: "100%" }}
@@ -225,7 +225,7 @@ function ThreeDCar() {
         }}
       >
         {/* minimal ambient fill */}
-        <ambientLight intensity={0.1} />
+        <ambientLight intensity={0.25} />
 
         {/* fixed directional key light */}
         <directionalLight
