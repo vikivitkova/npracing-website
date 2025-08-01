@@ -225,7 +225,7 @@ function ThreeDCar() {
         }}
       >
         {/* minimal ambient fill */}
-        <ambientLight intensity={0.25} />
+        <ambientLight intensity={1} />
 
         {/* fixed directional key light */}
         <directionalLight
