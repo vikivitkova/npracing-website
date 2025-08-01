@@ -66,10 +66,63 @@ function NPLogo({ size = 336 }) {
 // Top navigation bar
 function TopBar() {
   const linkStyle = {
-    color: "#fff", fontSize: 20, fontWeight: 700,
-    letterSpacing: 1, marginRight: 24,
-    fontFamily: "'Inconsolata', monospace", textDecoration: "none"
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: 600,
+    letterSpacing: 1,
+    marginRight: 20,
+    fontFamily: "'Inconsolata', monospace",
+    textDecoration: "none",
+    whiteSpace: "nowrap",
   };
+
+  const dotStyle = {
+    color: "#ffcc00",
+    fontSize: 20,
+    marginRight: 20,
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: 80,
+        background: "#000",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 16px",
+        boxSizing: "border-box",
+        zIndex: 10,
+        borderBottom: "1px solid #222",
+      }}
+    >
+      <a href="/" style={{ display: "block" }}>
+        <NPLogo size={120} />
+      </a>
+
+      <nav
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <a href="/" style={linkStyle}>Home</a>
+        <span style={dotStyle}>•</span>
+        <a href="/team.html" style={linkStyle}>Team</a>
+        <span style={dotStyle}>•</span>
+        <a href="/schedule.html" style={linkStyle}>Schedule</a>
+        <span style={dotStyle}>•</span>
+        <a href="/contact.html" style={linkStyle}>Contact</a>
+      </nav>
+    </div>
+  );
+}
   const dotStyle = { color: "#ffcc00", fontSize: 24, marginRight: 24 };
   return (
     <div style={{
@@ -188,9 +241,9 @@ function ThreeDCar() {
   return (
     <div style={{
       position: "relative",
-      marginTop: 90,
+      marginTop: 80,
       width: "100%",
-      height: "calc(100vh - 90px)",
+      height: "calc(100vh - 80px)",
       background: "#000",
       overflow: "hidden"
     }}>
