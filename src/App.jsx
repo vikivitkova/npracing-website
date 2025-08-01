@@ -1,7 +1,13 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import * as THREE from "three";
-import { Canvas, useLoader } from "@react-three/fiber";
-import { OrbitControls, Environment, Center, useHelper } from "@react-three/drei";
+import { Canvas, useLoader, extend, useThree } from "@react-three/fiber";
+import {
+  OrbitControls,
+  Environment,
+  Center,
+  TransformControls,
+  useHelper,
+} from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (original colors, scaled 20% smaller)
@@ -147,34 +153,19 @@ function LoadingScreen({ visible }) {
 }
 
 // OBJ model loader
-function FloatingObjModel({ onLoad }) {
-  const obj = useLoader(
-    OBJLoader,
-    "/models/F1.obj", // ensure your file is named car.obj in public/models
-    undefined,
-    onLoad
-  );
-
+function FloatingObjModel() {
+  const obj = useLoader(OBJLoader, "/models/F1.obj");
   useEffect(() => {
-    obj.traverse((child) => {
-      if (child.isMesh) {
-        child.material.polygonOffset = true;
-        child.material.polygonOffsetFactor = 5;
-        child.material.polygonOffsetUnits = 5;
-        child.material.needsUpdate = true;
+    obj.traverse((c) => {
+      if (c.isMesh) {
+        c.material.polygonOffset = true;
+        c.material.polygonOffsetFactor = 5;
+        c.material.polygonOffsetUnits = 5;
+        c.material.needsUpdate = true;
       }
     });
   }, [obj]);
-
-  return (
-    <primitive
-      object={obj}
-      scale={600000}
-      position={[0, 0, 0.5]}
-      castShadow
-      receiveShadow
-    />
-  );
+  return <primitive object={obj} scale={600000} position={[0, 0, 0.5]} />;
 }
 
 // Ground plane for shadows
@@ -187,13 +178,13 @@ function ShadowPlane() {
   );
 }
 
-// Directional light with helper
+// A fixed directional light with a helper
 function DirLightWithHelper() {
-  const lightRef = useRef();
-  useHelper(lightRef, THREE.DirectionalLightHelper, 50000, 0xff0000);
+  const light = useRef();
+  useHelper(light, THREE.DirectionalLightHelper, 100000, 0xff0000);
   return (
     <directionalLight
-      ref={lightRef}
+      ref={light}
       castShadow
       intensity={2}
       position={[0, 150000, 150000]}
@@ -205,10 +196,12 @@ function DirLightWithHelper() {
   );
 }
 
-// Main 3D component
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
+  const group = useRef();
+  const { camera, gl } = useThree();
 
+  // load font
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -217,6 +210,9 @@ function ThreeDCar() {
     document.head.appendChild(link);
   }, []);
 
+  // prevent OrbitControls from moving camera
+  // (we keep them so you can still zoom/pan if desired, but not mandatory)
+  // Alternatively remove OrbitControls entirely.
   return (
     <div
       style={{
@@ -224,7 +220,6 @@ function ThreeDCar() {
         marginTop: 90,
         width: "100%",
         height: "calc(100vh - 90px)",
-        background: "#000",
       }}
     >
       <LoadingScreen visible={loading} />
@@ -245,37 +240,35 @@ function ThreeDCar() {
           scene.add(new THREE.AxesHelper(50000));
         }}
       >
-        <ambientLight intensity={0.3} />
-        <hemisphereLight skyColor={0xffffff} groundColor={0x222222} intensity={0.4} />
+        {/* minimal ambient fill */}
+        <ambientLight intensity={0.2} />
 
+        {/* fixed key light */}
         <DirLightWithHelper />
 
+        {/* no environment background */}
         <Suspense fallback={null}>
-          <Environment preset="city" background />
+          <Environment preset="city" background={false} />
         </Suspense>
 
+        {/* group that will be moved by TransformControls */}
         <Suspense fallback={null}>
           <Center>
-            <FloatingObjModel onLoad={() => setLoading(false)} />
-            <ShadowPlane />
+            <group ref={group}>
+              <FloatingObjModel onLoad={() => setLoading(false)} />
+              <ShadowPlane />
+            </group>
           </Center>
+          <TransformControls object={group} mode="rotate" />
         </Suspense>
 
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          enableDamping
-          dampingFactor={0.1}
-          target={[0, 0, 0]}
-          minPolarAngle={0.2}
-          maxPolarAngle={Math.PI - 0.2}
-        />
+        {/* disable camera orbit if you like, or keep it */}
+        <OrbitControls enablePan={false} enableZoom={false} />
       </Canvas>
     </div>
   );
 }
 
-// App root
 export default function App() {
   return (
     <div
@@ -292,4 +285,3 @@ export default function App() {
     </div>
   );
 }
-
