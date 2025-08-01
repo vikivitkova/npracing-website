@@ -1,22 +1,18 @@
-import React, { useEffect, useState, Suspense, useRef } from "react";
+  import React, { useEffect, useState, Suspense, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { Environment, Center, useHelper } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (20% smaller)
-function NPLogo({ size = 400 }) {
+function NPLogo({ size = 300 }) {
   return (
     <svg
+      src="/npracing.svg"
+      alt="NP Racing Logo"
       width={size}
-      height={(size * 30.96) / 104.14}
-      viewBox="0 0 104.1419 30.962112"
-      xmlns="http://www.w3.org/2000/svg"
+      height="auto"
       style={{ display: "block" }}
-    >
-      <text x="0" y="20" fill="#fff" fontSize="20" fontFamily="Inconsolata">
-        NP RACING
-      </text>
     </svg>
   );
 }
@@ -140,6 +136,7 @@ function ThreeDCar() {
   const modelRef = useRef();
   const dragging = useRef(false);
   const prev = useRef({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
   // Responsive camera settings
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -160,6 +157,10 @@ function ThreeDCar() {
     return () => {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
+      const handleResize = () => setIsMobile(window.innerWidth <= 768);
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -190,15 +191,19 @@ function ThreeDCar() {
 
   return (
     <div style={{
-      position: "fixed", // Was "relative"
       top: 80,
       left: 0,
       right: 0,
       bottom: 0,
       background: "#000",
-      overflow: "hidden",
       touchAction: "none", // Prevent gestures
       WebkitOverflowScrolling: "touch"
+      position: "relative",
+      marginTop: 80,
+      width: "100%",
+      height: isMobile ? "calc(100vh - 80px)" : "calc(100vh - 80px)",
+      background: "#000",
+      overflow: "hidden"
     }}>
       {loading && <LoadingScreen />}
 
@@ -211,9 +216,14 @@ function ThreeDCar() {
           antialias: true,
           outputColorSpace: THREE.SRGBColorSpace
         }}
-        camera={cameraSettings}
+        camera={{
+          position: isMobile ? [0, 0, 140000] : [0, 0, 200000], // <-- adjust zoom on mobile
+          fov: isMobile ? 10 : 7,
+          near: 10000,
+          far: 500000
+        }}
         style={{ width: "100%", height: "100%", background: "#000" }}
-        onCreated={({ gl }) => {
+        onCreated={({ gl, scene }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
           gl.useLegacyLights = false;
