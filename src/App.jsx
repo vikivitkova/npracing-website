@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
-import { Environment, Center, useHelper } from "@react-three/drei";
+import { Environment, Center, useHelper, ContactShadows } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (20% smaller)
@@ -188,7 +188,7 @@ function ShadowPlane() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
       <planeGeometry args={[300000, 300000]} />
-      <shadowMaterial opacity={0.35} />
+      <shadowMaterial opacity={0.7} />
     </mesh>
   );
 }
@@ -323,9 +323,16 @@ function ThreeDCar() {
               controlRef={modelRef}
               scale={modelScale}
             />
-            <ShadowPlane />
           </Center>
-          <mesh rotation={[-Math.PI/2, 0, 0]} receiveShadow> </mesh>
+          <ContactShadows
+            rotation-x={-Math.PI / 2}
+            position={[0, 0, 0]}
+            width={300000}
+            height={300000}
+            blur={2}
+            opacity={0.7}
+            far={500000}
+          />
         </Suspense>
       </Canvas>
     </div>
