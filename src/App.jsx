@@ -210,7 +210,7 @@ function ThreeDCar() {
         onCreated={({ gl, scene }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
-          gl.physicallyCorrectLights = true;
+          gl.useLegacyLights = false;
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.toneMappingExposure = 0.6;
         }}
