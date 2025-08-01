@@ -169,6 +169,15 @@ function InteractiveModel({ onLoad, controlRef, scale }) {
   );
 }
 
+function ShadowPlane() {
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <planeGeometry args={[300000, 300000]} />
+      <shadowMaterial opacity={0.35} />
+    </mesh>
+  );
+}
+
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
   const modelRef = useRef();
