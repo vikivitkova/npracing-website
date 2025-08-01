@@ -134,7 +134,7 @@ function LoadingScreen() {
       fontSize: 20, letterSpacing: 2, zIndex: 1000
     }}>
       <NPLogo size={100} />
-      <div style={{ position: "absolute", bottom: 100 }}>Loading…</div>
+      <div style={{ position: "absolute", alignItems: "center", paddingTop: 50, }}>Loading…</div>
     </div>
   );
 }
