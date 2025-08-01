@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Suspense } from "react";
 import * as THREE from "three";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Environment, Center } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
@@ -151,9 +151,9 @@ function LoadingScreen({ visible }) {
 function FloatingObjModel({ onLoad }) {
   const obj = useLoader(
     OBJLoader,
-    "/models/F1 in schools v171 body.obj",
+    "/models/F1.obj",
     undefined,
-    onLoad
+    () => onLoad?.()
   );
   useEffect(() => {
     obj.traverse((child) => {
