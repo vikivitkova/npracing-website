@@ -113,7 +113,7 @@ function LoadingScreen() {
   );
 }
 
-// Interactive model with drag-to-rotate
+// Interactive model: free drag-to-orbit on both axes while mouse held
 function InteractiveModel({ onLoad }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
   const group = useRef();
@@ -121,7 +121,7 @@ function InteractiveModel({ onLoad }) {
   const prev = useRef({ x: 0, y: 0 });
   const [initialized, setInitialized] = useState(false);
 
-  // z‐fight fix + notify
+  // z-fight fix + onLoad callback
   useEffect(() => {
     if (obj && !initialized) {
       obj.traverse(c => {
@@ -139,7 +139,7 @@ function InteractiveModel({ onLoad }) {
     }
   }, [obj, initialized, onLoad]);
 
-  // pointer handlers
+  // pointer event handlers
   const onPointerDown = e => {
     e.stopPropagation();
     dragging.current = true;
@@ -154,11 +154,8 @@ function InteractiveModel({ onLoad }) {
     e.stopPropagation();
     const dx = e.clientX - prev.current.x;
     const dy = e.clientY - prev.current.y;
-    // apply yaw/pitch
-    group.current.rotation.y += dx * 0.005;
-    group.current.rotation.x += dy * 0.005;
-    // clamp X rotation between -90° and +90°
-    group.current.rotation.x = THREE.MathUtils.clamp(group.current.rotation.x, -Math.PI/2, Math.PI/2);
+    group.current.rotation.y += dx * 0.005; // yaw
+    group.current.rotation.x += dy * 0.005; // pitch
     prev.current = { x: e.clientX, y: e.clientY };
   };
 
@@ -169,29 +166,18 @@ function InteractiveModel({ onLoad }) {
       onPointerUp={onPointerUp}
       onPointerMove={onPointerMove}
     >
-      <primitive object={obj} scale={600000} position={[0,0,0.5]} />
+      <primitive object={obj} scale={600000} position={[0, 0, 0.5]} />
     </group>
   );
 }
 
-// Ground plane
-function ShadowPlane() { /* … */ }
-
-// Fixed directional light + helper
-function DirLightWithHelper() {
-  const lightRef = useRef();
-  useHelper(lightRef, THREE.DirectionalLightHelper, 100000, 0xff0000);
+// Ground plane for shadows
+function ShadowPlane() {
   return (
-    <directionalLight
-      ref={lightRef}
-      castShadow
-      intensity={2}
-      position={[0, 150000, 150000]}
-      shadow-mapSize-width={2048}
-      shadow-mapSize-height={2048}
-      shadow-bias={-0.0005}
-      shadow-normalBias={0.1}
-    />
+    <mesh rotation={[-Math.PI/2, 0, 0]} receiveShadow>
+      <planeGeometry args={[300000, 300000]} />
+      <shadowMaterial opacity={0.35} />
+    </mesh>
   );
 }
 
@@ -199,10 +185,10 @@ function DirLightWithHelper() {
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
 
-  // load font
+  // inject Inconsolata
   useEffect(() => {
     const link = document.createElement("link");
-    link.href =
+    link.href = 
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
@@ -225,8 +211,8 @@ function ThreeDCar() {
           toneMapping: THREE.ACESFilmicToneMapping,
           outputColorSpace: THREE.SRGBColorSpace
         }}
-        camera={{ position: [0,0,200000], fov:7, near:10000, far:500000 }}
-        style={{ background:"#000", width:"100%", height:"100%" }}
+        camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
+        style={{ background: "#000", width: "100%", height: "100%" }}
         onCreated={({ gl, scene }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -234,11 +220,20 @@ function ThreeDCar() {
           scene.add(new THREE.AxesHelper(50000));
         }}
       >
+        {/* subtle fill */}
         <ambientLight intensity={0.2} />
-        <DirLightWithHelper />
+        {/* fixed directional light */}
+        <directionalLight
+          castShadow
+          intensity={2}
+          position={[0, 150000, 150000]}
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-bias={-0.0005}
+          shadow-normalBias={0.1}
+        />
 
         <Suspense fallback={null}>
-          {/* reflections only */}
           <Environment preset="city" background={false} />
         </Suspense>
 
@@ -256,9 +251,11 @@ function ThreeDCar() {
 export default function App() {
   return (
     <div style={{
-      width:"100vw", height:"100vh",
-      background:"#000", overflow:"hidden",
-      fontFamily:"'Inconsolata', monospace"
+      width: "100vw",
+      height: "100vh",
+      background: "#000",
+      overflow: "hidden",
+      fontFamily: "'Inconsolata', monospace"
     }}>
       <TopBar />
       <ThreeDCar />
