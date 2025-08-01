@@ -299,18 +299,18 @@ function ThreeDCar() {
         <hemisphereLight
           skyColor={0x222222}
           groundColor={0x000000}
-          intensity={0.15}
+          intensity={0.05}
         />
         <directionalLight
           castShadow
-          intensity={1.0}
+          intensity={3.0}
           position={[200000, 300000, 200000]}
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
           shadow-bias={-0.0005}
           shadow-normalBias={0.05}
         />
-        <directionalLight intensity={0.2} position={[-200000, -100000, -200000]} />
+        <directionalLight intensity={0.3} position={[-200000, -100000, -200000]} />
 
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
@@ -325,6 +325,7 @@ function ThreeDCar() {
             />
             <ShadowPlane />
           </Center>
+          <mesh rotation={[-Math.PI/2, 0, 0]} receiveShadow> </mesh>
         </Suspense>
       </Canvas>
     </div>
