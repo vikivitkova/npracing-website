@@ -79,26 +79,6 @@ function TopBar() {
     </div>
   );
 }
-  const dotStyle = { color: "#ffcc00", fontSize: 24, marginRight: 24 };
-  return (
-    <div style={{
-      position: "fixed", top: 0, left: 0,
-      width: "100vw", height: 90,
-      background: "#000",
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "0 48px", boxSizing: "border-box",
-      zIndex: 10, borderBottom: "1px solid #222"
-    }}>
-      <a href="/"><NPLogo size={176} /></a>
-      <nav style={{ display: "flex", alignItems: "center" }}>
-        <a href="/" style={linkStyle}>Home</a><span style={dotStyle}>•</span>
-        <a href="/team.html" style={linkStyle}>Team</a><span style={dotStyle}>•</span>
-        <a href="/schedule.html" style={linkStyle}>Schedule</a><span style={dotStyle}>•</span>
-        <a href="/contact.html" style={linkStyle}>Contact</a>
-      </nav>
-    </div>
-  );
-}
 
 function LoadingScreen() {
   return (
