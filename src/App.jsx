@@ -1,4 +1,4 @@
-  import React, { useEffect, useState, Suspense, useRef } from "react";
+import React, { useEffect, useState, Suspense, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { Environment, Center, useHelper } from "@react-three/drei";
@@ -12,7 +12,7 @@ function NPLogo({ size = 300 }) {
       alt="NP Racing Logo"
       width={size}
       height="auto"
-      style={{ display: "block" }}
+      style={{ display: "block" }}>
     </svg>
   );
 }
