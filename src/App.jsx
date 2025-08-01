@@ -118,9 +118,10 @@ function InteractiveModel({ onLoad }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
   const group = useRef();
   const dragging = useRef(false);
-  const prevX = useRef(0);
+  const prev = useRef({ x: 0, y: 0 });
   const [initialized, setInitialized] = useState(false);
 
+  // z‐fight fix + notify
   useEffect(() => {
     if (obj && !initialized) {
       obj.traverse(c => {
@@ -138,10 +139,11 @@ function InteractiveModel({ onLoad }) {
     }
   }, [obj, initialized, onLoad]);
 
+  // pointer handlers
   const onPointerDown = e => {
     e.stopPropagation();
     dragging.current = true;
-    prevX.current = e.clientX;
+    prev.current = { x: e.clientX, y: e.clientY };
   };
   const onPointerUp = e => {
     e.stopPropagation();
@@ -150,9 +152,14 @@ function InteractiveModel({ onLoad }) {
   const onPointerMove = e => {
     if (!dragging.current) return;
     e.stopPropagation();
-    const delta = e.clientX - prevX.current;
-    group.current.rotation.y += delta * 0.005;
-    prevX.current = e.clientX;
+    const dx = e.clientX - prev.current.x;
+    const dy = e.clientY - prev.current.y;
+    // apply yaw/pitch
+    group.current.rotation.y += dx * 0.005;
+    group.current.rotation.x += dy * 0.005;
+    // clamp X rotation between -90° and +90°
+    group.current.rotation.x = THREE.MathUtils.clamp(group.current.rotation.x, -Math.PI/2, Math.PI/2);
+    prev.current = { x: e.clientX, y: e.clientY };
   };
 
   return (
@@ -162,22 +169,15 @@ function InteractiveModel({ onLoad }) {
       onPointerUp={onPointerUp}
       onPointerMove={onPointerMove}
     >
-      <primitive object={obj} scale={600000} position={[0, 0, 0.5]} />
+      <primitive object={obj} scale={600000} position={[0,0,0.5]} />
     </group>
   );
 }
 
-// Ground plane for shadows
-function ShadowPlane() {
-  return (
-    <mesh rotation={[-Math.PI/2, 0, 0]} receiveShadow>
-      <planeGeometry args={[300000, 300000]} />
-      <shadowMaterial opacity={0.35} />
-    </mesh>
-  );
-}
+// Ground plane
+function ShadowPlane() { /* … */ }
 
-// Directional light with helper
+// Fixed directional light + helper
 function DirLightWithHelper() {
   const lightRef = useRef();
   useHelper(lightRef, THREE.DirectionalLightHelper, 100000, 0xff0000);
@@ -199,6 +199,7 @@ function DirLightWithHelper() {
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
 
+  // load font
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -235,9 +236,12 @@ function ThreeDCar() {
       >
         <ambientLight intensity={0.2} />
         <DirLightWithHelper />
+
         <Suspense fallback={null}>
+          {/* reflections only */}
           <Environment preset="city" background={false} />
         </Suspense>
+
         <Suspense fallback={null}>
           <Center>
             <InteractiveModel onLoad={() => setLoading(false)} />
