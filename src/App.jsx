@@ -131,10 +131,10 @@ function LoadingScreen() {
       background: "#000", display: "flex",
       alignItems: "center", justifyContent: "center",
       color: "#ffcc00", fontFamily: "'Inconsolata', monospace",
-      fontSize: 38, letterSpacing: 2, zIndex: 1000
+      fontSize: 20, letterSpacing: 2, zIndex: 1000
     }}>
-      <NPLogo size={336} />
-      <div style={{ position: "absolute", bottom: 60 }}>Loading Model…</div>
+      <NPLogo size={100} />
+      <div style={{ position: "absolute", bottom: 100 }}>Loading…</div>
     </div>
   );
 }
@@ -240,6 +240,7 @@ function ThreeDCar() {
     <div style={{
       top: 0,
       left: 0,
+      right: 0,
       background: "#000",
       display: "flex",
       touchAction: "none", // Prevent gestures
