@@ -1,7 +1,13 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
-import { Environment, Center, useHelper, ContactShadows, AccumulativeShadows, RandomizedLight } from "@react-three/drei";
+import {
+  Environment,
+  Center,
+  ContactShadows,
+  AccumulativeShadows,
+  RandomizedLight,
+} from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (20% smaller)
@@ -201,34 +207,29 @@ function ThreeDCar() {
   const [isMobile, setIsMobile] = useState(false);
   const [modelScale, setModelScale] = useState(600000);
 
-  // Handle mobile detection, model scale, and disable page scroll
+  // Mobile detection, scale & disable scroll
   useEffect(() => {
     const link = document.createElement("link");
-    link.rel = "stylesheet";
     link.href =
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
+    link.rel = "stylesheet";
     document.head.appendChild(link);
 
-    const handleResize = () => {
+    const onResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
       setModelScale(mobile ? 250000 : 600000);
     };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    // prevent page scrolling
+    onResize();
+    window.addEventListener("resize", onResize);
     document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", onResize);
       document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
     };
   }, []);
 
-  // Pointer controls to rotate the model
+  // Drag‐to‐rotate
   const onPointerDown = (e) => {
     e.preventDefault();
     dragging.current = true;
@@ -254,7 +255,7 @@ function ThreeDCar() {
     prev.current = { x: e.clientX, y: e.clientY };
   };
 
-  // Choose camera based on device
+  // Responsive camera
   const cameraSettings = isMobile
     ? { position: [0, 0, modelScale * 0.33], fov: 10, near: 10000, far: 500000 }
     : { position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 };
@@ -263,7 +264,7 @@ function ThreeDCar() {
     <div
       style={{
         position: "fixed",
-        top: 80, // below TopBar (which is 80px tall)
+        top: 80,
         left: 0,
         right: 0,
         bottom: 0,
@@ -282,10 +283,6 @@ function ThreeDCar() {
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        gl={{
-          antialias: true,
-          outputColorSpace: THREE.SRGBColorSpace,
-        }}
         camera={cameraSettings}
         style={{ width: "100%", height: "100%" }}
         onCreated={({ gl }) => {
@@ -296,27 +293,26 @@ function ThreeDCar() {
           gl.toneMappingExposure = 0.6;
         }}
       >
-        <hemisphereLight
-          skyColor={0x222222}
-          groundColor={0x000000}
-          intensity={0.05}
-        />
+        {/* subtle fill */}
+        <hemisphereLight skyColor={0x222222} groundColor={0x000000} intensity={0.05} />
+
+        {/* main key light */}
         <directionalLight
           castShadow
-          intensity={3.0}
+          intensity={3}
           position={[200000, 300000, 200000]}
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
           shadow-bias={-0.0005}
           shadow-normalBias={0.05}
         />
+
+        {/* rim light */}
         <directionalLight intensity={0.3} position={[-200000, -100000, -200000]} />
 
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
-        </Suspense>
 
-        <Suspense fallback={null}>
           <Center>
             <InteractiveModel
               onLoad={() => setLoading(false)}
@@ -324,6 +320,7 @@ function ThreeDCar() {
               scale={modelScale}
             />
           </Center>
+
           <ContactShadows
             rotation-x={-Math.PI / 2}
             position={[0, 0, 0]}
@@ -333,24 +330,25 @@ function ThreeDCar() {
             opacity={0.7}
             far={500000}
           />
-        <AccumulativeShadows
-          frames={60}      // number of frames to accumulate
-          temporal         // blend over time
-          color="black"    // shadow color
-          colorBlend={2}   // how strongly shadows darken
-          opacity={1}      
-          scale={1.2}      // slightly larger than your model
-          alphaTest={0.85} // discard low‐value shadows
-        >
-          <RandomizedLight
-            amount={8}        // number of virtual lights
-            radius={2}        // how far spread
-            ambient={0.2}     // ambient contribution
-            intensity={1.5}   // light brightness
-            position={[100000, 300000, 100000]}
-            bias={0.0001}
-          />
-        </AccumulativeShadows>
+
+          <AccumulativeShadows
+            frames={60}
+            temporal
+            color="black"
+            colorBlend={2}
+            opacity={1}
+            scale={1.2}
+            alphaTest={0.85}
+          >
+            <RandomizedLight
+              amount={8}
+              radius={2}
+              ambient={0.2}
+              intensity={1.5}
+              position={[100000, 300000, 100000]}
+              bias={0.0001}
+            />
+          </AccumulativeShadows>
         </Suspense>
       </Canvas>
     </div>
