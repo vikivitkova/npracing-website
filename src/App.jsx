@@ -139,10 +139,10 @@ function ThreeDCar() {
   const [isMobile, setIsMobile] = useState(false);
 
   // Responsive camera settings
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  const cameraSettings = isMobile
-    ? { position: [0, 0, 300000], fov: 12, near: 10000, far: 500000 }
-    : { position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 };
+  //const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  //const cameraSettings = isMobile
+    //? { position: [0, 0, 300000], fov: 12, near: 10000, far: 500000 }
+    //: { position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 };
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -197,7 +197,7 @@ function ThreeDCar() {
       bottom: 0,
       background: "#000",
       touchAction: "none", // Prevent gestures
-      WebkitOverflowScrolling: "touch"
+      WebkitOverflowScrolling: "touch",
       position: "relative",
       marginTop: 80,
       width: "100%",
