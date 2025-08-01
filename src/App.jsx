@@ -141,12 +141,26 @@ function ThreeDCar() {
   const dragging = useRef(false);
   const prev = useRef({ x: 0, y: 0 });
 
+  // Responsive camera settings
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const cameraSettings = isMobile
+    ? { position: [0, 0, 300000], fov: 12, near: 10000, far: 500000 }
+    : { position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 };
+
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href =
       "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap";
     document.head.appendChild(link);
+
+    // Prevent scrolling on mobile
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
   }, []);
 
   const onPointerDown = e => {
@@ -176,12 +190,15 @@ function ThreeDCar() {
 
   return (
     <div style={{
-      position: "relative",
-      marginTop: 80,
-      width: "100%",
-      height: "calc(100vh - 80px)",
+      position: "fixed", // Was "relative"
+      top: 80,
+      left: 0,
+      right: 0,
+      bottom: 0,
       background: "#000",
-      overflow: "hidden"
+      overflow: "hidden",
+      touchAction: "none", // Prevent gestures
+      WebkitOverflowScrolling: "touch"
     }}>
       {loading && <LoadingScreen />}
 
@@ -194,9 +211,9 @@ function ThreeDCar() {
           antialias: true,
           outputColorSpace: THREE.SRGBColorSpace
         }}
-        camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
+        camera={cameraSettings}
         style={{ width: "100%", height: "100%", background: "#000" }}
-        onCreated={({ gl, scene }) => {
+        onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
           gl.useLegacyLights = false;
@@ -227,21 +244,6 @@ function ThreeDCar() {
           </Center>
         </Suspense>
       </Canvas>
-    </div>
-  );
-}
-
-export default function App() {
-  return (
-    <div style={{
-      width: "100vw",
-      height: "100vh",
-      background: "#000",
-      overflow: "hidden",
-      fontFamily: "'Inconsolata', monospace"
-    }}>
-      <TopBar />
-      <ThreeDCar />
     </div>
   );
 }
