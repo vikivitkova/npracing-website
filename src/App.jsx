@@ -65,16 +65,78 @@ function NPLogo({ size = 300 }) {
 }
 
 function TopBar() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Responsive sizes
+  const logoSize = isMobile ? 80 : 120;
+  const linkFontSize = isMobile ? 14 : 16;
+  const linkSpacing = isMobile ? 8 : 12;
+
   const linkStyle = {
     color: "#fff",
-    fontSize: 16,
+    fontSize: linkFontSize,
     fontWeight: 600,
     letterSpacing: 1,
-    marginRight: 12,
+    marginRight: linkSpacing,
     fontFamily: "'Inconsolata', monospace",
     textDecoration: "none",
     whiteSpace: "nowrap",
   };
+
+  const dotStyle = {
+    color: "#ffcc00",
+    fontSize: linkFontSize + 2,
+    marginRight: linkSpacing,
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: 80,
+        background: "#000",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 16px",
+        boxSizing: "border-box",
+        zIndex: 10,
+        borderBottom: "1px solid #222",
+      }}
+    >
+      <a href="/" style={{ display: "block" }}>
+        <NPLogo size={logoSize} />
+      </a>
+
+      <nav
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",     // allow wrapping if needed
+          overflowX: "auto",    // scroll instead of overlap
+        }}
+      >
+        <a href="/" style={linkStyle}>Home</a>
+        <span style={dotStyle}>•</span>
+        <a href="/team.html" style={linkStyle}>Team</a>
+        <span style={dotStyle}>•</span>
+        <a href="/schedule.html" style={linkStyle}>Schedule</a>
+        <span style={dotStyle}>•</span>
+        <a href="/contact.html" style={linkStyle}>Contact</a>
+      </nav>
+    </div>
+  );
+}
 
   const dotStyle = {
     color: "#ffcc00",
