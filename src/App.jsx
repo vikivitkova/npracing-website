@@ -1,13 +1,7 @@
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Center,
-  TransformControls,
-  Environment,
-  useHelper
-} from "@react-three/drei";
+import { Environment, Center, useHelper } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 // NP Racing SVG Logo (20% smaller)
@@ -27,7 +21,7 @@ function NPLogo({ size = 336 }) {
             fontSize: 17.6389,
             fontFamily: "Inconsolata, monospace",
             fill: "#fff",
-            strokeWidth: 0.264583,
+            strokeWidth: 0.264583
           }}
         >
           <g
@@ -37,7 +31,7 @@ function NPLogo({ size = 336 }) {
               fontFamily: "Inconsolata, monospace",
               letterSpacing: 5.29167,
               fill: "#fff",
-              strokeWidth: 2.21112,
+              strokeWidth: 2.21112
             }}
           >
             {/* RACING text paths */}
@@ -49,22 +43,21 @@ function NPLogo({ size = 336 }) {
             <path d="m 130.26509,194.1211 q 0,0.98778 -0.381,1.32644 -0.36688,0.33867 -1.36877,0.33867 h -4.84011 q -1.00189,0 -1.38289,-0.33867 -0.36689,-0.33866 -0.36689,-1.32644 v -3.69711 q 0,-0.98778 0.36689,-1.32644 0.381,-0.33867 1.38289,-0.33867 h 4.84011 q 1.04422,0 1.397,0.36689 0.35277,0.35278 0.35277,1.38289 h -1.59455 v -0.49389 h -5.10822 v 4.445 h 5.10822 v -1.56634 h -2.94922 v -1.19944 h 4.54377 z" />
           </g>
         </g>
-        {/* Yellow accent */}
         <path
           style={{
             fill: "#ffcc00",
             strokeWidth: 1.61928,
-            strokeLinecap: "round",
+            strokeLinecap: "round"
           }}
           d="m 64.083427,130.25096 -9.959082,21.06022 h 4.532023 l 9.959082,-21.06022 z m 11.342977,0 -9.959082,21.06022 h 1.139465 4.505151 3.62872 l 9.959082,-21.06022 h -3.628719 -4.505152 z m 14.738635,0 -9.959082,21.06022 h 1.783354 v 5.1e-4 h 13.889591 l 0.535368,-1.13223 h -0.001 l 9.42371,-19.9285 H 97.007033 91.94791 Z"
         />
-        {/* White accent */}
         <path
           style={{
             fill: "#fff",
-            strokeLinejoin: "round",
+            strokeLinejoin: "round"
           }}
-          d="m 111.60859,130.25083 c -0.96683,0.005 -1.91905,0.53479 -2.3828,1.51567 L 101.76888,147.53246 100,151.27435 h 5.85287 l 0.69867,-1.47846 h 5.2e-4 l 5.77949,-12.22045 11.88247,12.88242 c 1.27166,1.38021 3.53608,1.03468 4.33824,-0.66197 l 6.74016,-14.25185 h 16.1463 l -2.44895,5.17747 h -8.20725 l -2.50217,5.29115 h 12.38477 c 1.02253,-1.7e-4 1.95344,-0.58946 2.39107,-1.51361 l 4.95267,-10.46861 c 0.83036,-1.75547 -0.45016,-3.77762 -2.3921,-3.77755 h -21.99814 c -1.02309,-4.3e-4 -1.95475,0.58896 -2.39262,1.51361 l -5.7795,12.22096 -11.88247,-12.88294 c -0.53648,-0.58227 -1.24991,-0.85758 -1.95544,-0.85369 z" />
+          d="m 111.60859,130.25083 c -0.96683,0.005 -1.91905,0.53479 -2.3828,1.51567 L 101.76888,147.53246 100,151.27435 h 5.85287 l 0.69867,-1.47846 h 5.2e-4 l 5.77949,-12.22045 11.88247,12.88242 c 1.27166,1.38021 3.53608,1.03468 4.33824,-0.66197 l 6.74016,-14.25185 h 16.1463 l -2.44895,5.17747 h -8.20725 l -2.50217,5.29115 h 12.38477 c 1.02253,-1.7e-4 1.95344,-0.58946 2.39107,-1.51361 l 4.95267,-10.46861 c 0.83036,-1.75547 -0.45016,-3.77762 -2.3921,-3.77755 h -21.99814 c -1.02309,-4.3e-4 -1.95475,0.58896 -2.39262,1.51361 l -5.7795,12.22096 -11.88247,-12.88294 c -0.53648,-0.58227 -1.24991,-0.85758 -1.95544,-0.85369 z"
+        />
       </g>
     </svg>
   );
@@ -120,49 +113,71 @@ function LoadingScreen() {
   );
 }
 
-// OBJ model loader – now calls onLoad exactly once
-function FloatingObjModel({ onLoad }) {
+// Interactive model with drag-to-rotate
+function InteractiveModel({ onLoad }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
-  const [done, setDone] = useState(false);
+  const group = useRef();
+  const dragging = useRef(false);
+  const prevX = useRef(0);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (obj && !done) {
-      // apply z-fight fix
-      obj.traverse(child => {
-        if (child.isMesh) {
-          child.material.polygonOffset = true;
-          child.material.polygonOffsetFactor = 5;
-          child.material.polygonOffsetUnits = 5;
-          child.material.needsUpdate = true;
+    if (obj && !initialized) {
+      obj.traverse(c => {
+        if (c.isMesh) {
+          c.castShadow = true;
+          c.receiveShadow = true;
+          c.material.polygonOffset = true;
+          c.material.polygonOffsetFactor = 5;
+          c.material.polygonOffsetUnits = 5;
+          c.material.needsUpdate = true;
         }
       });
-      onLoad();      // notify parent
-      setDone(true); // only once
+      onLoad();
+      setInitialized(true);
     }
-  }, [obj, done, onLoad]);
+  }, [obj, initialized, onLoad]);
+
+  const onPointerDown = e => {
+    e.stopPropagation();
+    dragging.current = true;
+    prevX.current = e.clientX;
+  };
+  const onPointerUp = e => {
+    e.stopPropagation();
+    dragging.current = false;
+  };
+  const onPointerMove = e => {
+    if (!dragging.current) return;
+    e.stopPropagation();
+    const delta = e.clientX - prevX.current;
+    group.current.rotation.y += delta * 0.005;
+    prevX.current = e.clientX;
+  };
 
   return (
-    <primitive
-      object={obj}
-      scale={600000}
-      position={[0, 0, 0.5]}
-      castShadow
-      receiveShadow
-    />
+    <group
+      ref={group}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerMove={onPointerMove}
+    >
+      <primitive object={obj} scale={600000} position={[0, 0, 0.5]} />
+    </group>
   );
 }
 
 // Ground plane for shadows
 function ShadowPlane() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+    <mesh rotation={[-Math.PI/2, 0, 0]} receiveShadow>
       <planeGeometry args={[300000, 300000]} />
       <shadowMaterial opacity={0.35} />
     </mesh>
   );
 }
 
-// Directional light + helper
+// Directional light with helper
 function DirLightWithHelper() {
   const lightRef = useRef();
   useHelper(lightRef, THREE.DirectionalLightHelper, 100000, 0xff0000);
@@ -183,9 +198,7 @@ function DirLightWithHelper() {
 // Main 3D component
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
-  const groupRef = useRef();
 
-  // inject Inconsolata font
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -211,8 +224,8 @@ function ThreeDCar() {
           toneMapping: THREE.ACESFilmicToneMapping,
           outputColorSpace: THREE.SRGBColorSpace
         }}
-        camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
-        style={{ background: "#000", width: "100%", height: "100%" }}
+        camera={{ position: [0,0,200000], fov:7, near:10000, far:500000 }}
+        style={{ background:"#000", width:"100%", height:"100%" }}
         onCreated={({ gl, scene }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -220,30 +233,17 @@ function ThreeDCar() {
           scene.add(new THREE.AxesHelper(50000));
         }}
       >
-        {/* slight fill so nothing is pitch-black */}
         <ambientLight intensity={0.2} />
-
-        {/* fixed key light */}
         <DirLightWithHelper />
-
-        {/* reflections only */}
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
-
-        {/* center & render model + plane */}
         <Suspense fallback={null}>
           <Center>
-            <group ref={groupRef}>
-              <FloatingObjModel onLoad={() => setLoading(false)} />
-              <ShadowPlane />
-            </group>
+            <InteractiveModel onLoad={() => setLoading(false)} />
+            <ShadowPlane />
           </Center>
-          <TransformControls object={groupRef.current} mode="rotate" />
         </Suspense>
-
-        {/* camera controls (camera fixed) */}
-        <OrbitControls enablePan={false} enableZoom={false} enableRotate={false} />
       </Canvas>
     </div>
   );
@@ -252,11 +252,9 @@ function ThreeDCar() {
 export default function App() {
   return (
     <div style={{
-      width: "100vw",
-      height: "100vh",
-      background: "#000",
-      overflow: "hidden",
-      fontFamily: "'Inconsolata', monospace"
+      width:"100vw", height:"100vh",
+      background:"#000", overflow:"hidden",
+      fontFamily:"'Inconsolata', monospace"
     }}>
       <TopBar />
       <ThreeDCar />
