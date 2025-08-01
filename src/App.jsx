@@ -10,8 +10,8 @@ function NPLogo({ size = 300 }) {
     <svg
       src="/npracing.svg"
       alt="NP Racing Logo"
-      width="auto"
-      height="auto"
+      width="100%"
+      height="100%"
       style={{ display: "block" }}>
     </svg>
   );
