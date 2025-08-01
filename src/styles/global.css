@@ -11,11 +11,16 @@ html, body {
   touch-action: manipulation;
   -webkit-user-select: none;
   user-select: none;
-  margin: 0;
-  padding: 0;
   background: var(--primary);
   color: var(--neutral);
   font-family: var(--font-main);
   min-height: 100%;
   scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
 }
