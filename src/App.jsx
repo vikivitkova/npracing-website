@@ -9,6 +9,7 @@ import {
   RandomizedLight,
 } from "@react-three/drei";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { EffectComposer, SSAO } from "@react-three/postprocessing";
 
 // NP Racing SVG Logo (20% smaller)
 function NPLogo({ size = 300 }) {
@@ -349,6 +350,15 @@ function ThreeDCar() {
               bias={0.0001}
             />
           </AccumulativeShadows>
+          <EffectComposer multisampling={0}>
+            <SSAO
+              samples={32}
+              radius={0.5}
+              intensity={30}
+              luminanceInfluence={0.1}
+              color="black"
+            />
+          </EffectComposer>
         </Suspense>
       </Canvas>
     </div>
