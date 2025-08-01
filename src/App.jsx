@@ -238,23 +238,27 @@ function ThreeDCar() {
 
   return (
     <div style={{
-      top: 80,
+      top: 0,
       left: 0,
-      right: 0,
-      bottom: 0,
       background: "#000",
+      display: flex,
       touchAction: "none", // Prevent gestures
       WebkitOverflowScrolling: "touch",
-      position: "relative",
+      position: "absolute",
+      justifyContent: "center",
+      alignItems: "center",
       marginTop: 80,
-      width: "100%",
+      width: "100vw",
       height: isMobile ? "calc(100vh - 80px)" : "calc(100vh - 80px)",
       background: "#000",
-      overflow: "hidden"
+      overflow: "hidden",
+      boxSizing: "border-box",
     }}>
       {loading && <LoadingScreen />}
 
       <Canvas
+        shadows
+        dpr={[1, 2]}
         shadows
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -269,7 +273,7 @@ function ThreeDCar() {
           near: 10000,
           far: 500000
         }}
-        style={{ width: "100%", height: "100%", background: "#000" }}
+        style={{ width: "100%", height: "100%", background: "#000", maxWidth: "3000px", maxHeight: "3000px", }}
         onCreated={({ gl, scene }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
