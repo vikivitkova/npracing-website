@@ -80,7 +80,7 @@ function TopBar() {
       padding: "0 48px", boxSizing: "border-box",
       zIndex: 10, borderBottom: "1px solid #222"
     }}>
-      <a href="/" style={{ display: "block" }}><NPLogo size={176} /></a>
+      <a href="/"><NPLogo size={176} /></a>
       <nav style={{ display: "flex", alignItems: "center" }}>
         <a href="/" style={linkStyle}>Home</a><span style={dotStyle}>•</span>
         <a href="/team.html" style={linkStyle}>Team</a><span style={dotStyle}>•</span>
@@ -91,7 +91,6 @@ function TopBar() {
   );
 }
 
-// Loading overlay
 function LoadingScreen() {
   return (
     <div style={{
@@ -103,14 +102,11 @@ function LoadingScreen() {
       fontSize: 38, letterSpacing: 2, zIndex: 1000
     }}>
       <NPLogo size={336} />
-      <div style={{ marginTop: 42, position: "absolute", bottom: 60 }}>
-        Loading Model…
-      </div>
+      <div style={{ position: "absolute", bottom: 60 }}>Loading Model…</div>
     </div>
   );
 }
 
-// Interactive model: free drag-to-orbit
 function InteractiveModel({ onLoad, controlRef }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
   const group = useRef();
@@ -120,11 +116,11 @@ function InteractiveModel({ onLoad, controlRef }) {
     if (obj && !initialized) {
       obj.traverse(c => {
         if (c.isMesh) {
-          c.castShadow = true;
-          c.receiveShadow = true;
           c.material.polygonOffset = true;
           c.material.polygonOffsetFactor = 5;
           c.material.polygonOffsetUnits = 5;
+          c.castShadow = true;
+          c.receiveShadow = true;
           c.material.needsUpdate = true;
         }
       });
@@ -141,7 +137,6 @@ function InteractiveModel({ onLoad, controlRef }) {
   );
 }
 
-// Ground plane for shadows
 function ShadowPlane() {
   return (
     <mesh rotation={[-Math.PI/2, 0, 0]} receiveShadow>
@@ -151,14 +146,12 @@ function ShadowPlane() {
   );
 }
 
-// Main 3D scene
 function ThreeDCar() {
   const [loading, setLoading] = useState(true);
   const modelRef = useRef();
   const dragging = useRef(false);
   const prev = useRef({ x: 0, y: 0 });
 
-  // load font
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
@@ -167,7 +160,6 @@ function ThreeDCar() {
     document.head.appendChild(link);
   }, []);
 
-  // global drag-to-rotate
   const onPointerDown = e => {
     e.preventDefault();
     dragging.current = true;
@@ -182,8 +174,15 @@ function ThreeDCar() {
     e.preventDefault();
     const dx = e.clientX - prev.current.x;
     const dy = e.clientY - prev.current.y;
-    modelRef.current.rotation.y += dx * 0.005;  // yaw
-    modelRef.current.rotation.x += dy * 0.005;  // pitch
+    // rotate around world axes so controls never invert
+    modelRef.current.rotateOnWorldAxis(
+      new THREE.Vector3(0, 1, 0),
+      dx * 0.005
+    );
+    modelRef.current.rotateOnWorldAxis(
+      new THREE.Vector3(1, 0, 0),
+      dy * 0.005
+    );
     prev.current = { x: e.clientX, y: e.clientY };
   };
 
@@ -203,43 +202,39 @@ function ThreeDCar() {
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        gl={{
-          antialias: true,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          outputColorSpace: THREE.SRGBColorSpace
+        gl={({ toneMappingExposure = 0.6, physicallyCorrectLights = true }, gl) => {
+          gl.physicallyCorrectLights = true;
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 0.6;
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+          return gl;
         }}
         camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
-        style={{ background: "#000", width: "100%", height: "100%" }}
-        onCreated={({ gl, scene }) => {
-          gl.shadowMap.enabled = true;
-          gl.shadowMap.type = THREE.PCFSoftShadowMap;
-          gl.toneMappingExposure = 0.8;  // reduce overexposure
-        }}
+        style={{ width: "100%", height: "100%", background: "#000" }}
       >
-        {/* Hemisphere fill for subtle bounce */}
+        {/* subtle sky-ground fill */}
         <hemisphereLight
-          skyColor={0x444444}
+          skyColor={0x222222}
           groundColor={0x000000}
-          intensity={0.2}
+          intensity={0.15}
         />
-        {/* Key directional light */}
+        {/* strong key light */}
         <directionalLight
           castShadow
-          intensity={1.2}
-          position={[100000, 200000, 100000]}
+          intensity={1.0}
+          position={[200000, 300000, 200000]}
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
           shadow-bias={-0.0005}
           shadow-normalBias={0.05}
         />
-        {/* Rim light from behind camera */}
+        {/* soft rim from behind*/}
         <directionalLight
-          intensity={0.3}
-          position={[-100000, 50000, -100000]}
+          intensity={0.2}
+          position={[-200000, -100000, -200000]}
         />
 
         <Suspense fallback={null}>
-          {/* IBL for reflections */}
           <Environment preset="city" background={false} />
         </Suspense>
 
@@ -260,10 +255,8 @@ function ThreeDCar() {
 export default function App() {
   return (
     <div style={{
-      width: "100vw",
-      height: "100vh",
-      background: "#000",
-      overflow: "hidden",
+      width: "100vw", height: "100vh",
+      background: "#000", overflow: "hidden",
       fontFamily: "'Inconsolata', monospace"
     }}>
       <TopBar />
