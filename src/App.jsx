@@ -73,99 +73,74 @@ function NPLogo({ size = 336 }) {
 // Top navigation bar
 function TopBar() {
   const linkStyle = {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: 700,
-    letterSpacing: 1,
-    marginRight: 24,
+    color: "#fff", fontSize: 20, fontWeight: 700,
+    letterSpacing: 1, marginRight: 24,
     fontFamily: "'Inconsolata', monospace",
-    textDecoration: "none",
+    textDecoration: "none"
   };
   const dotStyle = { color: "#ffcc00", fontSize: 24, marginRight: 24 };
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: 90,
-        background: "#000",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 48px",
-        boxSizing: "border-box",
-        zIndex: 10,
-        borderBottom: "1px solid #222",
-      }}
-    >
+    <div style={{
+      position: "fixed", top: 0, left: 0,
+      width: "100vw", height: 90,
+      background: "#000",
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+      padding: "0 48px", boxSizing: "border-box",
+      zIndex: 10, borderBottom: "1px solid #222"
+    }}>
       <a href="/" style={{ display: "block" }}>
         <NPLogo size={176} />
       </a>
       <nav style={{ display: "flex", alignItems: "center" }}>
-        <a href="/" style={linkStyle}>
-          Home
-        </a>
-        <span style={dotStyle}>•</span>
-        <a href="/team.html" style={linkStyle}>
-          Team
-        </a>
-        <span style={dotStyle}>•</span>
-        <a href="/schedule.html" style={linkStyle}>
-          Schedule
-        </a>
-        <span style={dotStyle}>•</span>
-        <a href="/contact.html" style={linkStyle}>
-          Contact
-        </a>
+        <a href="/" style={linkStyle}>Home</a><span style={dotStyle}>•</span>
+        <a href="/team.html" style={linkStyle}>Team</a><span style={dotStyle}>•</span>
+        <a href="/schedule.html" style={linkStyle}>Schedule</a><span style={dotStyle}>•</span>
+        <a href="/contact.html" style={linkStyle}>Contact</a>
       </nav>
     </div>
   );
 }
 
 // Loading overlay
-function LoadingScreen({ visible }) {
-  if (!visible) return null;
+function LoadingScreen() {
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        background: "#000",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#ffcc00",
-        fontFamily: "'Inconsolata', monospace",
-        fontSize: 38,
-        letterSpacing: 2,
-        zIndex: 1000,
-      }}
-    >
+    <div style={{
+      position: "absolute", top: 0, left: 0,
+      width: "100%", height: "100%",
+      background: "#000", display: "flex",
+      alignItems: "center", justifyContent: "center",
+      color: "#ffcc00", fontFamily: "'Inconsolata', monospace",
+      fontSize: 38, letterSpacing: 2, zIndex: 1000
+    }}>
       <NPLogo size={336} />
-      <div style={{ marginTop: 42 }}>Loading Model...</div>
+      <div style={{ marginTop: 42, position: "absolute", bottom: 60 }}>
+        Loading Model…
+      </div>
     </div>
   );
 }
 
-// OBJ model loader with polygonOffset fix
-function FloatingObjModel() {
+// OBJ model loader – now calls onLoad exactly once
+function FloatingObjModel({ onLoad }) {
   const obj = useLoader(OBJLoader, "/models/F1.obj");
+  const [done, setDone] = useState(false);
+
   useEffect(() => {
-    obj.traverse((child) => {
-      if (child.isMesh) {
-        child.material.polygonOffset = true;
-        child.material.polygonOffsetFactor = 5;
-        child.material.polygonOffsetUnits = 5;
-        child.material.needsUpdate = true;
-      }
-    });
-  }, [obj]);
+    if (obj && !done) {
+      // apply z-fight fix
+      obj.traverse(child => {
+        if (child.isMesh) {
+          child.material.polygonOffset = true;
+          child.material.polygonOffsetFactor = 5;
+          child.material.polygonOffsetUnits = 5;
+          child.material.needsUpdate = true;
+        }
+      });
+      onLoad();      // notify parent
+      setDone(true); // only once
+    }
+  }, [obj, done, onLoad]);
+
   return (
     <primitive
       object={obj}
@@ -187,7 +162,7 @@ function ShadowPlane() {
   );
 }
 
-// Directional light with helper
+// Directional light + helper
 function DirLightWithHelper() {
   const lightRef = useRef();
   useHelper(lightRef, THREE.DirectionalLightHelper, 100000, 0xff0000);
@@ -210,7 +185,7 @@ function ThreeDCar() {
   const [loading, setLoading] = useState(true);
   const groupRef = useRef();
 
-  // Load font once
+  // inject Inconsolata font
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -220,23 +195,21 @@ function ThreeDCar() {
   }, []);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        marginTop: 90,
-        width: "100%",
-        height: "calc(100vh - 90px)",
-        background: "#000",
-      }}
-    >
-      <LoadingScreen visible={loading} />
+    <div style={{
+      position: "relative",
+      marginTop: 90,
+      width: "100%",
+      height: "calc(100vh - 90px)",
+      background: "#000"
+    }}>
+      {loading && <LoadingScreen />}
 
       <Canvas
         shadows
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          outputColorSpace: THREE.SRGBColorSpace,
+          outputColorSpace: THREE.SRGBColorSpace
         }}
         camera={{ position: [0, 0, 200000], fov: 7, near: 10000, far: 500000 }}
         style={{ background: "#000", width: "100%", height: "100%" }}
@@ -247,14 +220,13 @@ function ThreeDCar() {
           scene.add(new THREE.AxesHelper(50000));
         }}
       >
-        {/* minimal fill */}
+        {/* slight fill so nothing is pitch-black */}
         <ambientLight intensity={0.2} />
 
         {/* fixed key light */}
         <DirLightWithHelper />
 
-        {/* no skybox background */}
-        {/* environment kept for reflections but background=false */}
+        {/* reflections only */}
         <Suspense fallback={null}>
           <Environment preset="city" background={false} />
         </Suspense>
@@ -270,8 +242,8 @@ function ThreeDCar() {
           <TransformControls object={groupRef.current} mode="rotate" />
         </Suspense>
 
-        {/* keep OrbitControls if you want zoom/pan, but camera/light stay fixed */}
-        <OrbitControls enablePan={false} enableZoom={false} />
+        {/* camera controls (camera fixed) */}
+        <OrbitControls enablePan={false} enableZoom={false} enableRotate={false} />
       </Canvas>
     </div>
   );
@@ -279,15 +251,13 @@ function ThreeDCar() {
 
 export default function App() {
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        background: "#000",
-        overflow: "hidden",
-        fontFamily: "'Inconsolata', monospace",
-      }}
-    >
+    <div style={{
+      width: "100vw",
+      height: "100vh",
+      background: "#000",
+      overflow: "hidden",
+      fontFamily: "'Inconsolata', monospace"
+    }}>
       <TopBar />
       <ThreeDCar />
     </div>
