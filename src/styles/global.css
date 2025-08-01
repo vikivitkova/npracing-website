@@ -8,6 +8,9 @@
 }
 
 html, body {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
   margin: 0;
   padding: 0;
   background: var(--primary);
