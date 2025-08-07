@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/*"
+  to   = "https://npracingdebug.netlify.app"
+  status = 301
+  force = true
